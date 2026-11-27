@@ -104,6 +104,9 @@ a{color:inherit;text-decoration:none}
 .pp-article a:hover{color:var(--g900)}
 .note{background:#fff6d2;border-left:5px solid var(--gold);padding:.9rem 1.1rem;border-radius:10px;margin:1rem 0}
 .pp-back{display:inline-block;margin-top:1.6rem;color:var(--g900);font-weight:700}
+.closed-banner{max-width:960px;margin:-3rem auto 0;position:relative;z-index:3;background:#d6373b;color:#fff;font-weight:700;padding:1rem 1.4rem;border-radius:12px;box-shadow:0 10px 24px rgba(214,55,59,.35);text-align:center;font-size:1.05rem;letter-spacing:.2px}
+.closed-banner:not([hidden]) + .pp-article{margin-top:1rem}
+.tag-closed{position:absolute;top:12px;right:12px;background:#d6373b;color:#fff;font-size:.78rem;font-weight:700;padding:.3rem .7rem;border-radius:8px}
 
 /* ADMIN */
 #admin{background:#f1f5f2;min-height:100vh}
@@ -241,6 +244,7 @@ input[type=file]{padding:.5rem}
   </section>
   <div class="pp-body">
     <div class="container">
+      <div id="pp-closed" class="closed-banner" hidden>SCHEME CLOSED: Is scheme ke liye abhi applications qabool nahi ho rahi.</div>
       <article class="pp-article">
         <img id="pp-img" class="pp-img" alt="" hidden />
         <p id="pp-summary" class="pp-summary"></p>
@@ -303,6 +307,12 @@ input[type=file]{padding:.5rem}
               <option>Education</option>
               <option>Announcements</option>
               <option>General</option>
+            </select>
+          </label>
+          <label>Scheme ka status
+            <select id="status">
+              <option value="open">Open (scheme chal rahi hai)</option>
+              <option value="closed">Closed (scheme band hai)</option>
             </select>
           </label>
           <label>Chhota intro (card aur post ke upar dikhega)
@@ -527,7 +537,7 @@ function render() {
     <article class="card" data-id="${esc(p.id)}" style="animation-delay:${i * 60}ms">
       <div class="card-img" style="${img ? `background-image:url('${esc(img)}')` : ""}">
         ${img ? "" : `<span class="card-placeholder">🇵🇰</span>`}
-        <span class="tag">${esc(p.category)}</span>
+        <span class="tag">${esc(p.category)}</span>${p.status === "closed" ? '<span class="tag-closed">Closed</span>' : ""}
       </div>
       <div class="card-body">
         <h3>${esc(p.title)}</h3>
@@ -563,6 +573,7 @@ async function showPost(id) {
   $("pp-content").innerHTML = "";
   $("pp-summary").textContent = "";
   $("pp-img").hidden = true;
+  $("pp-closed").hidden = true;
   try {
     const snap = await getDoc(doc(db, "posts", id));
     if (!snap.exists()) throw new Error("not-found");
@@ -573,6 +584,7 @@ async function showPost(id) {
     $("pp-summary").textContent = p.summary || "";
     if (p.image_data) { $("pp-img").src = p.image_data; $("pp-img").hidden = false; }
     $("pp-content").innerHTML = renderContent(p.content);
+    $("pp-closed").hidden = p.status !== "closed";
     document.title = `${p.title} | Punjab Portal`;
   } catch {
     $("pp-title").textContent = "Post dastiyab nahi hai";
@@ -653,7 +665,7 @@ function renderAdminList() {
     <div class="row" data-id="${esc(p.id)}">
       <div class="row-main">
         <strong>${esc(p.title)}</strong>
-        <small>${esc(p.category)} · ${fmtDate(p.createdAt)}</small>
+        <small>${esc(p.category)} · ${p.status === "closed" ? "Closed" : "Open"} · ${fmtDate(p.createdAt)}</small>
       </div>
       <span class="badge ${p.published ? "live" : "draft"}">${p.published ? "Live" : "Draft"}</span>
       <div class="row-actions">
@@ -696,6 +708,7 @@ function fillForm(p) {
   $("summary").value = p.summary || "";
   $("content").value = p.content || "";
   $("published").checked = !!p.published;
+  $("status").value = p.status || "open";
   $("current-image").value = p.image_data || "";
   $("form-title").textContent = "Post edit karein";
   $("save-btn").textContent = "Update Post";
@@ -713,6 +726,7 @@ function resetForm() {
   $("save-btn").textContent = "Save Post";
   $("preview").hidden = true;
   $("published").checked = true;
+  $("status").value = "open";
 }
 
 $("reset-btn").addEventListener("click", resetForm);
@@ -768,6 +782,7 @@ $("post-form").addEventListener("submit", async (e) => {
       content: $("content").value.trim(),
       image_data: imageData,
       published: $("published").checked,
+      status: $("status").value,
       updatedAt: serverTimestamp()
     };
 

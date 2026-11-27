@@ -59,9 +59,14 @@ a{color:inherit;text-decoration:none}
 .chips{display:flex;flex-wrap:wrap;gap:.5rem}
 .chip{border:1px solid var(--line);background:#fff;color:var(--g900);padding:.4rem .9rem;border-radius:999px;cursor:pointer;font:inherit;font-size:.88rem}
 .chip.active{background:var(--g700);color:#fff;border-color:var(--g700)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.6rem}
-.card{background:#fff;border-radius:var(--radius);overflow:hidden;cursor:pointer;box-shadow:var(--shadow);transition:transform .3s,box-shadow .3s}
-.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-h)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.6rem;perspective:1200px}
+.card{--rx:0deg;--ry:0deg;--z:0px;--mx:50%;--my:50%;position:relative;background:#fff;border-radius:var(--radius);overflow:hidden;cursor:pointer;box-shadow:0 10px 22px rgba(11,77,38,.14),0 3px 6px rgba(0,0,0,.06);transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateZ(var(--z));transition:transform .18s ease-out,box-shadow .35s ease;will-change:transform}
+.card::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.38),transparent 55%);opacity:0;transition:opacity .35s}
+.card:hover{box-shadow:0 34px 50px -12px rgba(6,51,26,.45),0 14px 20px rgba(0,0,0,.12)}
+.card:hover::after{opacity:1}
+.card-img{transition:transform .4s ease}
+.card:hover .card-img{transform:scale(1.04)}
+@media (prefers-reduced-motion:reduce){.card{transform:none!important;transition:none}}
 .card-img{position:relative;height:190px;background-size:cover;background-position:center;background-color:var(--g900);background-image:linear-gradient(135deg,var(--g950),var(--g500))}
 .card-placeholder{position:absolute;inset:0;display:grid;place-items:center;font-size:3.5rem;opacity:.9}
 .tag{position:absolute;top:12px;left:12px;background:#fff;color:var(--g900);font-size:.78rem;font-weight:700;padding:.3rem .7rem;border-radius:8px}
@@ -571,6 +576,26 @@ function render() {
 $("grid").addEventListener("click", (e) => {
   const card = e.target.closest("[data-id]");
   if (card) location.hash = "#post/" + card.dataset.id;
+});
+$("grid").addEventListener("pointermove", (e) => {
+  if (e.pointerType !== "mouse") return;
+  const card = e.target.closest(".card");
+  if (!card) return;
+  const r = card.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width;
+  const y = (e.clientY - r.top) / r.height;
+  card.style.setProperty("--rx", `${((0.5 - y) * 16).toFixed(2)}deg`);
+  card.style.setProperty("--ry", `${((x - 0.5) * 16).toFixed(2)}deg`);
+  card.style.setProperty("--z", "28px");
+  card.style.setProperty("--mx", `${(x * 100).toFixed(1)}%`);
+  card.style.setProperty("--my", `${(y * 100).toFixed(1)}%`);
+});
+$("grid").addEventListener("pointerout", (e) => {
+  const card = e.target.closest(".card");
+  if (!card || card.contains(e.relatedTarget)) return;
+  card.style.setProperty("--rx", "0deg");
+  card.style.setProperty("--ry", "0deg");
+  card.style.setProperty("--z", "0px");
 });
 $("chips").addEventListener("click", (e) => {
   const chip = e.target.closest("[data-cat]");

@@ -8,18 +8,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
 <style>
-:root{--g950:#06331a;--g900:#0b4d26;--g700:#0f7a3d;--g500:#1aa34a;--g100:#e6f5ec;--gold:#f4b400;--cream:#fbf8ef;--ink:#1d2a20;--muted:#6b7a70;--line:#e3e9e4;--danger:#d6373b;--radius:16px;--shadow:0 10px 30px rgba(11,77,38,.10);--shadow-h:0 18px 40px rgba(11,77,38,.18)}
+:root{--g950:#06331a;--g900:#0b4d26;--g700:#0f7a3d;--g500:#1aa34a;--g100:#e6f5ec;--gold:#f4b400;--cream:#fbf8ef;--wheat:#f6ecd2;--ink:#1d2a20;--muted:#6b7a70;--line:#e3e9e4;--danger:#d6373b;--radius:16px;--shadow:0 10px 30px rgba(11,77,38,.10);--shadow-h:0 18px 40px rgba(11,77,38,.18)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:"Noto Sans","Segoe UI",system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
-body.no-scroll{overflow:hidden}
 a{color:inherit;text-decoration:none}
 [hidden]{display:none!important}
 .container{width:min(1200px,92%);margin:0 auto}
 .muted{color:var(--muted);font-size:.9rem}
 .empty{text-align:center;padding:3rem 1rem;color:var(--muted);grid-column:1/-1}
 .error{color:var(--danger);min-height:1.2em;margin:0}
-.btn-primary,.btn-ghost,.btn-danger{border:none;cursor:pointer;font:inherit;font-weight:600;padding:.6rem 1.1rem;border-radius:10px;transition:all .2s}
+.btn-primary,.btn-ghost,.btn-danger{border:none;cursor:pointer;font:inherit;font-weight:600;padding:.6rem 1.1rem;border-radius:10px;transition:all .2s;display:inline-block}
 .btn-primary{background:linear-gradient(135deg,var(--g700),var(--g500));color:#fff;box-shadow:0 6px 16px rgba(15,122,61,.3)}
 .btn-primary:hover{transform:translateY(-1px)}
 .btn-primary:disabled{opacity:.6;cursor:wait}
@@ -32,7 +31,7 @@ a{color:inherit;text-decoration:none}
 .brand-mark.big{width:64px;height:64px;margin:0 auto 1rem;font-size:1.4rem}
 
 /* HEADER */
-.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .nav-wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
 .brand{display:flex;align-items:center;gap:.75rem}
 .brand strong{display:block;font-size:1.15rem;color:var(--g900);line-height:1.1}
@@ -42,7 +41,7 @@ a{color:inherit;text-decoration:none}
 .nav-admin{background:var(--g900);color:#fff!important;padding:.45rem 1rem;border-radius:999px}
 .menu-btn{display:none;background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--g900)}
 
-/* HERO */
+/* HOME HERO */
 .hero{position:relative;overflow:hidden;color:#fff;padding:5.5rem 0 6.5rem;background:radial-gradient(circle at 15% 20%,rgba(244,180,0,.25),transparent 40%),radial-gradient(circle at 85% 80%,rgba(26,163,74,.5),transparent 45%),linear-gradient(135deg,var(--g950),var(--g700))}
 .hero::before{content:"";position:absolute;inset:0;opacity:.08;background-image:repeating-linear-gradient(45deg,#fff 0 2px,transparent 2px 22px)}
 .hero-inner{position:relative;text-align:center}
@@ -53,7 +52,7 @@ a{color:inherit;text-decoration:none}
 .search-box{display:flex;align-items:center;gap:.6rem;max-width:560px;margin:0 auto;background:#fff;border-radius:999px;padding:.4rem 1.2rem;box-shadow:0 16px 40px rgba(0,0,0,.25)}
 .search-box input{flex:1;border:none;outline:none;font:inherit;font-size:1rem;padding:.7rem 0;color:var(--ink)}
 
-/* MAIN */
+/* HOME LIST */
 .main{margin-top:-3rem;position:relative;z-index:2;padding-bottom:4rem}
 .section-head{background:#fff;border-radius:var(--radius);padding:1.4rem 1.6rem;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;margin-bottom:2rem}
 .section-head h2{margin:0;color:var(--g900)}
@@ -66,14 +65,11 @@ a{color:inherit;text-decoration:none}
 .card-img{position:relative;height:190px;background-size:cover;background-position:center;background-color:var(--g900);background-image:linear-gradient(135deg,var(--g950),var(--g500))}
 .card-placeholder{position:absolute;inset:0;display:grid;place-items:center;font-size:3.5rem;opacity:.9}
 .tag{position:absolute;top:12px;left:12px;background:#fff;color:var(--g900);font-size:.78rem;font-weight:700;padding:.3rem .7rem;border-radius:8px}
-.tag-dark{position:static;display:inline-block;background:var(--g100)}
 .card-body{padding:1.2rem 1.3rem 1.4rem}
 .card-body h3{margin:0 0 .4rem;font-size:1.1rem;color:var(--g900);line-height:1.35}
 .card-body p{margin:0 0 1rem;color:var(--muted);font-size:.93rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .card-foot{display:flex;justify-content:space-between;align-items:center}
 .read-more{color:var(--g700);font-weight:700;font-size:.9rem}
-
-/* ABOUT / FOOTER */
 .about{background:linear-gradient(180deg,var(--g100),var(--cream));padding:4rem 0}
 .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:2rem;align-items:center}
 .about h2{color:var(--g900);margin-top:0}
@@ -87,17 +83,27 @@ a{color:inherit;text-decoration:none}
 .footer p{margin:.3rem 0 0;font-size:.9rem}
 .footer-link{color:var(--gold);font-weight:700}
 
-/* MODAL */
-.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s}
-.modal.open{opacity:1;pointer-events:auto}
-.modal-backdrop{position:absolute;inset:0;background:rgba(6,51,26,.6);backdrop-filter:blur(4px)}
-.modal-box{position:relative;background:#fff;width:min(720px,100%);max-height:90vh;overflow:auto;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
-.modal-img{width:100%;height:280px;object-fit:cover;display:block}
-.modal-body{padding:1.6rem 1.8rem 2rem}
-.modal-body h2{color:var(--g900);margin:.6rem 0 .2rem;line-height:1.3}
-.m-summary{font-weight:600;color:var(--g700);margin:1rem 0 .6rem}
-.m-content{white-space:pre-line}
-.modal-x{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.95);cursor:pointer;font-size:1rem;color:var(--g900)}
+/* POST PAGE (official-style) */
+.pp-hero{background:radial-gradient(circle at 80% 30%,rgba(244,180,0,.18),transparent 45%),linear-gradient(135deg,#1aa34a,#0f7a3d 60%,#0b4d26);color:#fff;padding:3rem 0 5.5rem;text-align:center}
+.crumb{display:inline-block;background:rgba(255,255,255,.95);color:var(--ink);padding:.6rem 1.4rem;border-radius:10px;font-size:1rem;margin-bottom:1.4rem;max-width:92%}
+.crumb a{color:var(--ink)}
+.crumb a:hover{color:var(--g700)}
+.crumb .cur{color:var(--g700);font-weight:600}
+.pp-hero h1{font-size:clamp(1.9rem,4.6vw,3.1rem);margin:0;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.2)}
+.pp-body{background:linear-gradient(180deg,var(--wheat),var(--cream) 60%);padding:0 0 4rem;min-height:60vh}
+.pp-article{background:rgba(255,255,255,.94);border-radius:16px;padding:2.2rem 2.5rem 2.5rem;box-shadow:var(--shadow);max-width:960px;margin:-3rem auto 0;position:relative;font-size:1.05rem;line-height:1.85;color:var(--ink)}
+.pp-img{width:100%;max-height:380px;object-fit:cover;border-radius:12px;margin-bottom:1.5rem;display:block}
+.pp-summary{font-weight:600;color:var(--g900);font-size:1.12rem;margin:0 0 1rem}
+.pp-article h2{font-size:1.6rem;color:var(--ink);margin:1.9rem 0 .6rem;line-height:1.3}
+.pp-article h3{font-size:1.25rem;color:var(--g900);margin:1.4rem 0 .4rem}
+.pp-article p{margin:.5rem 0 .9rem}
+.pp-article ul{margin:.3rem 0 1rem;padding-left:1.4rem}
+.pp-article li{margin:.25rem 0}
+.pp-article strong{font-weight:700}
+.pp-article a{color:var(--g700);font-weight:600;text-decoration:underline;word-break:break-word}
+.pp-article a:hover{color:var(--g900)}
+.note{background:#fff6d2;border-left:5px solid var(--gold);padding:.9rem 1.1rem;border-radius:10px;margin:1rem 0}
+.pp-back{display:inline-block;margin-top:1.6rem;color:var(--g900);font-weight:700}
 
 /* ADMIN */
 #admin{background:#f1f5f2;min-height:100vh}
@@ -108,7 +114,7 @@ a{color:inherit;text-decoration:none}
 .back-link{display:block;margin-top:1.2rem;color:var(--muted);font-size:.9rem}
 input,textarea,select{width:100%;margin-top:.35rem;padding:.65rem .8rem;border:1px solid var(--line);border-radius:10px;font:inherit;color:var(--ink);background:#fff}
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--g500);box-shadow:0 0 0 3px rgba(26,163,74,.18)}
-textarea{resize:vertical}
+textarea{resize:vertical;font-family:inherit;line-height:1.6}
 input[type=file]{padding:.5rem}
 .check{display:flex!important;align-items:center;gap:.6rem;font-weight:600}
 .check input{width:auto;margin:0}
@@ -125,12 +131,15 @@ input[type=file]{padding:.5rem}
 .stat{background:#fff;border-radius:14px;padding:1.1rem 1.3rem;box-shadow:var(--shadow);border-left:5px solid var(--g500)}
 .stat span{color:var(--muted);font-size:.85rem}
 .stat strong{display:block;font-size:1.8rem;color:var(--g900)}
-.admin-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.5rem;align-items:start}
+.admin-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:1.5rem;align-items:start}
 .panel{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:var(--shadow)}
 .panel h2{margin-top:0;color:var(--g900);font-size:1.2rem}
 .preview{width:100%;height:160px;object-fit:cover;border-radius:12px;margin:-.4rem 0 1rem}
 .form-actions{display:flex;gap:.6rem}
 .form-actions .btn-primary{flex:1}
+.help{background:var(--g100);border-radius:12px;padding:.9rem 1rem;font-size:.86rem;margin:.2rem 0 1rem;color:var(--g950)}
+.help code{background:#fff;padding:.05rem .35rem;border-radius:5px;font-size:.85rem}
+.help-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.6rem}
 .list{display:flex;flex-direction:column;gap:.7rem;max-height:75vh;overflow:auto;padding-right:.3rem}
 .row{display:grid;grid-template-columns:1fr auto;gap:.5rem .8rem;align-items:center;border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}
 .row:hover{border-color:var(--g500)}
@@ -140,7 +149,7 @@ input[type=file]{padding:.5rem}
 .badge.live{background:#d9f5e3;color:var(--g700)}
 .badge.draft{background:#fff3cf;color:#8a6400}
 .row-actions{grid-column:1/-1;display:flex;gap:.4rem;flex-wrap:wrap}
-.row-actions button{padding:.4rem .75rem;font-size:.85rem}
+.row-actions button,.row-actions a{padding:.4rem .75rem;font-size:.85rem}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
@@ -154,6 +163,7 @@ input[type=file]{padding:.5rem}
  .nav.open{transform:none;visibility:visible}
  .stats,.stats-row{grid-template-columns:1fr}
  .hero{padding:4rem 0 5rem}
+ .pp-article{padding:1.4rem 1.2rem;margin-top:-2rem}
 }
 </style>
 </head>
@@ -175,7 +185,7 @@ input[type=file]{padding:.5rem}
   </div>
 </header>
 
-<!-- ===================== USER PANEL ===================== -->
+<!-- ============ HOME (user panel) ============ -->
 <div id="site">
   <section class="hero">
     <div class="container hero-inner">
@@ -217,24 +227,31 @@ input[type=file]{padding:.5rem}
       <a href="#admin" class="footer-link">Admin Login →</a>
     </div>
   </footer>
+</div>
 
-  <div id="modal" class="modal">
-    <div class="modal-backdrop" data-close></div>
-    <article class="modal-box" role="dialog" aria-modal="true">
-      <button class="modal-x" data-close aria-label="Close">✕</button>
-      <img id="m-img" class="modal-img" alt="" hidden />
-      <div class="modal-body">
-        <span id="m-cat" class="tag tag-dark"></span>
-        <h2 id="m-title"></h2>
-        <small id="m-date" class="muted"></small>
-        <p id="m-summary" class="m-summary"></p>
-        <div id="m-content" class="m-content"></div>
+<!-- ============ POST PAGE (har post isi design mein) ============ -->
+<div id="post-page" hidden>
+  <section class="pp-hero">
+    <div class="container">
+      <div class="crumb">
+        <a href="#">Home</a> &nbsp;/&nbsp; <a href="#posts" id="pp-cat"></a> &nbsp;/&nbsp; <span class="cur" id="pp-crumb-title"></span>
       </div>
-    </article>
+      <h1 id="pp-title">Loading…</h1>
+    </div>
+  </section>
+  <div class="pp-body">
+    <div class="container">
+      <article class="pp-article">
+        <img id="pp-img" class="pp-img" alt="" hidden />
+        <p id="pp-summary" class="pp-summary"></p>
+        <div id="pp-content"></div>
+      </article>
+      <a href="#posts" class="pp-back">← Tamam posts par wapas jayein</a>
+    </div>
   </div>
 </div>
 
-<!-- ===================== ADMIN PANEL ===================== -->
+<!-- ============ ADMIN PANEL ============ -->
 <div id="admin" hidden>
   <section id="login-view" class="login-wrap" hidden>
     <form id="login-form" class="login-card">
@@ -278,19 +295,45 @@ input[type=file]{padding:.5rem}
           <label>Title *<input id="title" required maxlength="150" /></label>
           <label>Category
             <select id="category">
-              <option>General</option>
+              <option>Flagship Projects</option>
               <option>Social Protection</option>
               <option>Health</option>
               <option>Youth</option>
               <option>Citizen Facilitation</option>
               <option>Education</option>
               <option>Announcements</option>
+              <option>General</option>
             </select>
           </label>
-          <label>Summary (card par dikhega)<textarea id="summary" rows="2" maxlength="300"></textarea></label>
-          <label>Full content<textarea id="content" rows="8"></textarea></label>
-          <label>Image (optional)<input id="image" type="file" accept="image/*" /></label>
+          <label>Chhota intro (card aur post ke upar dikhega)
+            <textarea id="summary" rows="2" maxlength="300"></textarea>
+          </label>
+
+          <label>Post ka mukammal content
+            <div class="help">
+              Har post ka design ek jaisa rahega. Content aise likhein:
+              <ul style="margin:.4rem 0 0;padding-left:1.1rem">
+                <li><code>## Heading</code> = bara section (e.g. Overview)</li>
+                <li><code>### Heading</code> = chhota section</li>
+                <li><code>- item</code> = bullet point</li>
+                <li><code>**bold**</code> = mota likhna</li>
+                <li><code>[naam](https://link)</code> = link</li>
+                <li><code>&gt; note</code> = highlight box</li>
+                <li>Khali line = naya paragraph</li>
+              </ul>
+              <div class="help-row">
+                <span>Shuru karne ke liye sample use karein:</span>
+                <button type="button" id="template-btn" class="btn-ghost">Sample template bharein</button>
+              </div>
+            </div>
+            <textarea id="content" rows="16" placeholder="## Overview&#10;Yahan post ki tafseel likhein..."></textarea>
+          </label>
+
+          <label>Image (optional, post ke upar dikhegi)
+            <input id="image" type="file" accept="image/*" />
+          </label>
           <img id="preview" class="preview" alt="" hidden />
+
           <label class="check"><input id="published" type="checkbox" checked /><span>Publish karein (website par dikhayein)</span></label>
 
           <div class="form-actions">
@@ -334,6 +377,7 @@ const auth = getAuth(app);
 
 // ---------- HELPERS ----------
 const $ = (id) => document.getElementById(id);
+const DEFAULT_TITLE = document.title;
 
 function esc(v) {
   return String(v ?? "").replace(/[&<>"']/g, (c) => ({
@@ -355,7 +399,7 @@ function toast(msg, type = "ok") {
   clearTimeout(toast.timer);
   toast.timer = setTimeout(() => (t.className = "toast"), 3200);
 }
-function imageToDataUrl(file, maxSize = 800, quality = 0.7) {
+function imageToDataUrl(file, maxSize = 1000, quality = 0.7) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("Image read nahi ho saki"));
@@ -378,22 +422,66 @@ function imageToDataUrl(file, maxSize = 800, quality = 0.7) {
   });
 }
 
-// ---------- ROUTING (#admin ya khali) ----------
+// Simple text -> HTML (safe). Admin ko HTML nahi likhni parti.
+function inline(s) {
+  let t = esc(s);
+  t = t.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  t = t.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    (m, label, url) => `<a href="${url}" target="_blank" rel="noopener">${label}</a>`);
+  return t;
+}
+function renderContent(text) {
+  const lines = String(text || "").split(/\r?\n/);
+  let html = "", para = [], inList = false;
+  const flush = () => { if (para.length) { html += `<p>${inline(para.join(" "))}</p>`; para = []; } };
+  const closeList = () => { if (inList) { html += "</ul>"; inList = false; } };
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { flush(); closeList(); continue; }
+    if (line.startsWith("### ")) { flush(); closeList(); html += `<h3>${inline(line.slice(4))}</h3>`; }
+    else if (line.startsWith("## ")) { flush(); closeList(); html += `<h2>${inline(line.slice(3))}</h2>`; }
+    else if (line.startsWith("- ")) {
+      flush();
+      if (!inList) { html += "<ul>"; inList = true; }
+      html += `<li>${inline(line.slice(2))}</li>`;
+    }
+    else if (line.startsWith("> ")) { flush(); closeList(); html += `<div class="note">${inline(line.slice(2))}</div>`; }
+    else { closeList(); para.push(line); }
+  }
+  flush(); closeList();
+  return html;
+}
+
+// ---------- ROUTING ----------
+// #admin = admin panel, #post/ID = post page, khali/#posts = home
 function route() {
-  const onAdmin = location.hash === "#admin";
-  $("site").hidden = onAdmin;
+  const h = location.hash;
+  const onAdmin = h === "#admin";
+  const onPost = h.startsWith("#post/");
+
+  $("site").hidden = onAdmin || onPost;
   $("admin").hidden = !onAdmin;
-  if (!onAdmin) $("nav").classList.remove("open");
-  window.scrollTo(0, 0);
+  $("post-page").hidden = !onPost;
+  $("nav").classList.remove("open");
+
+  if (onPost) {
+    showPost(decodeURIComponent(h.slice(6)));
+    window.scrollTo(0, 0);
+  } else if (onAdmin) {
+    window.scrollTo(0, 0);
+  } else {
+    document.title = DEFAULT_TITLE;
+    const target = /^#[a-z]+$/i.test(h) ? document.querySelector(h) : null;
+    if (target) target.scrollIntoView();
+    else window.scrollTo(0, 0);
+  }
 }
 window.addEventListener("hashchange", route);
-route();
-
 $("menu-btn").addEventListener("click", () => $("nav").classList.toggle("open"));
 $("year").textContent = new Date().getFullYear();
 
 // =====================================================
-// USER PANEL
+// HOME
 // =====================================================
 let posts = [];
 let category = "All";
@@ -402,7 +490,6 @@ let searchText = "";
 async function loadPosts() {
   $("grid").innerHTML = `<p class="empty">Loading…</p>`;
   try {
-    // Sirf published posts. Sorting browser mein hoti hai, is liye extra index nahi chahiye.
     const q = query(collection(db, "posts"), where("published", "==", true));
     const snap = await getDocs(q);
     posts = snap.docs
@@ -422,17 +509,13 @@ function buildChips() {
     .join("");
 }
 
-function filtered() {
+function render() {
   const s = searchText.trim().toLowerCase();
-  return posts.filter((p) => {
+  const list = posts.filter((p) => {
     const catOk = category === "All" || p.category === category;
     const text = `${p.title} ${p.summary || ""} ${p.content || ""}`.toLowerCase();
     return catOk && (!s || text.includes(s));
   });
-}
-
-function render() {
-  const list = filtered();
   $("count").textContent = `${list.length} post${list.length === 1 ? "" : "s"}`;
   if (!list.length) {
     $("grid").innerHTML = `<p class="empty">Koi post nahi mili.</p>`;
@@ -455,28 +538,9 @@ function render() {
   }).join("");
 }
 
-function openPost(id) {
-  const p = posts.find((x) => x.id === id);
-  if (!p) return;
-  $("m-cat").textContent = p.category;
-  $("m-title").textContent = p.title;
-  $("m-date").textContent = fmtDate(p.createdAt);
-  $("m-summary").textContent = p.summary || "";
-  $("m-content").textContent = p.content || "";
-  const img = $("m-img");
-  if (p.image_data) { img.src = p.image_data; img.hidden = false; }
-  else { img.hidden = true; img.removeAttribute("src"); }
-  $("modal").classList.add("open");
-  document.body.classList.add("no-scroll");
-}
-function closeModal() {
-  $("modal").classList.remove("open");
-  document.body.classList.remove("no-scroll");
-}
-
 $("grid").addEventListener("click", (e) => {
   const card = e.target.closest("[data-id]");
-  if (card) openPost(card.dataset.id);
+  if (card) location.hash = "#post/" + card.dataset.id;
 });
 $("chips").addEventListener("click", (e) => {
   const chip = e.target.closest("[data-cat]");
@@ -489,15 +553,36 @@ $("search").addEventListener("input", (e) => {
   searchText = e.target.value;
   render();
 });
-$("modal").addEventListener("click", (e) => {
-  if (e.target.matches("[data-close], .modal-backdrop")) closeModal();
-});
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-
-loadPosts();
 
 // =====================================================
-// ADMIN PANEL
+// POST PAGE
+// =====================================================
+async function showPost(id) {
+  $("pp-title").textContent = "Loading…";
+  $("pp-crumb-title").textContent = "";
+  $("pp-content").innerHTML = "";
+  $("pp-summary").textContent = "";
+  $("pp-img").hidden = true;
+  try {
+    const snap = await getDoc(doc(db, "posts", id));
+    if (!snap.exists()) throw new Error("not-found");
+    const p = snap.data();
+    $("pp-cat").textContent = p.category || "Flagship Projects";
+    $("pp-title").textContent = p.title;
+    $("pp-crumb-title").textContent = p.title;
+    $("pp-summary").textContent = p.summary || "";
+    if (p.image_data) { $("pp-img").src = p.image_data; $("pp-img").hidden = false; }
+    $("pp-content").innerHTML = renderContent(p.content);
+    document.title = `${p.title} | Punjab Portal`;
+  } catch {
+    $("pp-title").textContent = "Post dastiyab nahi hai";
+    $("pp-crumb-title").textContent = "";
+    $("pp-content").innerHTML = `<p>Ye post mojood nahi ya abhi publish nahi hui.</p>`;
+  }
+}
+
+// =====================================================
+// ADMIN
 // =====================================================
 let adminPosts = [];
 
@@ -572,6 +657,7 @@ function renderAdminList() {
       </div>
       <span class="badge ${p.published ? "live" : "draft"}">${p.published ? "Live" : "Draft"}</span>
       <div class="row-actions">
+        <a href="#post/${esc(p.id)}" class="btn-ghost">View</a>
         <button data-action="edit" class="btn-ghost">Edit</button>
         <button data-action="toggle" class="btn-ghost">${p.published ? "Unpublish" : "Publish"}</button>
         <button data-action="delete" class="btn-danger">Delete</button>
@@ -631,6 +717,31 @@ function resetForm() {
 
 $("reset-btn").addEventListener("click", resetForm);
 
+const SAMPLE_TEMPLATE = `## Overview
+Yahan scheme ya khabar ki mukammal tafseel likhein. Ek khali line se naya paragraph shuru hota hai.
+
+## Eligibility Criteria
+Is scheme ke liye ye shartein poori honi chahiye:
+- **Residency:** Punjab ka permanent resident, valid CNIC ke saath
+- **Age Limit:** 21 se 60 saal ke darmiyan
+- **Financial Background:** Bank ya kisi idaray mein koi default nahi
+
+## How to Apply
+Eligible log ye steps follow karein:
+- Official portal par account banayein
+- Zaroori documents upload karein
+
+> Note: Koi ahem maloomat ya tanbeeh yahan likhein.
+
+## For Further Details
+- Official Portal: [https://example.gov.pk](https://example.gov.pk)
+- Toll-Free Helpline: 0800-00000`;
+
+$("template-btn").addEventListener("click", () => {
+  if ($("content").value.trim() && !confirm("Maujooda content badal jayega. Theek hai?")) return;
+  $("content").value = SAMPLE_TEMPLATE;
+});
+
 $("image").addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -670,6 +781,7 @@ $("post-form").addEventListener("submit", async (e) => {
     }
     resetForm();
     loadAdminPosts();
+    loadPosts();
   } catch (err) {
     toast(err.message || "Kuch ghalat ho gaya", "err");
   } finally {
@@ -677,6 +789,10 @@ $("post-form").addEventListener("submit", async (e) => {
     btn.textContent = isEdit ? "Update Post" : "Save Post";
   }
 });
+
+// ---------- START ----------
+route();
+loadPosts();
 </script>
 </body>
 </html>

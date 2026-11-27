@@ -142,6 +142,9 @@ input[type=file]{padding:.5rem}
 .form-actions .btn-primary{flex:1}
 .help{background:var(--g100);border-radius:12px;padding:.9rem 1rem;font-size:.86rem;margin:.2rem 0 1rem;color:var(--g950)}
 .help code{background:#fff;padding:.05rem .35rem;border-radius:5px;font-size:.85rem}
+.toolbar{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0 .3rem}
+.toolbar button{border:1px solid var(--line);background:#fff;color:var(--g900);padding:.35rem .7rem;border-radius:8px;cursor:pointer;font:inherit;font-size:.85rem;font-weight:600}
+.toolbar button:hover{background:var(--g100)}
 .help-row{display:flex;justify-content:space-between;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.6rem}
 .list{display:flex;flex-direction:column;gap:.7rem;max-height:75vh;overflow:auto;padding-right:.3rem}
 .row{display:grid;grid-template-columns:1fr auto;gap:.5rem .8rem;align-items:center;border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}
@@ -326,6 +329,8 @@ input[type=file]{padding:.5rem}
                 <li><code>## Heading</code> = bara section (e.g. Overview)</li>
                 <li><code>### Heading</code> = chhota section</li>
                 <li><code>- item</code> = bullet point</li>
+                <li>Sub-bullet: line ke shuru mein 2 space chhor kar <code>- item</code> likhein</li>
+                <li>Bold: word select karke upar <b>B</b> button dabayein</li>
                 <li><code>**bold**</code> = mota likhna</li>
                 <li><code>[naam](https://link)</code> = link</li>
                 <li><code>&gt; note</code> = highlight box</li>
@@ -335,6 +340,15 @@ input[type=file]{padding:.5rem}
                 <span>Shuru karne ke liye sample use karein:</span>
                 <button type="button" id="template-btn" class="btn-ghost">Sample template bharein</button>
               </div>
+            </div>
+            <div id="toolbar" class="toolbar">
+              <button type="button" data-fmt="bold" title="Bold"><b>B</b></button>
+              <button type="button" data-fmt="h2" title="Bara heading">Bara heading</button>
+              <button type="button" data-fmt="h3" title="Chhota heading">Chhota heading</button>
+              <button type="button" data-fmt="bullet" title="Bullet point">• List</button>
+              <button type="button" data-fmt="sub" title="Sub bullet">◦ Sub</button>
+              <button type="button" data-fmt="link" title="Link">🔗 Link</button>
+              <button type="button" data-fmt="note" title="Highlight box">Note</button>
             </div>
             <textarea id="content" rows="16" placeholder="## Overview&#10;Yahan post ki tafseel likhein..."></textarea>
           </label>
@@ -442,23 +456,29 @@ function inline(s) {
 }
 function renderContent(text) {
   const lines = String(text || "").split(/\r?\n/);
-  let html = "", para = [], inList = false;
+  let html = "", para = [], depth = 0;
   const flush = () => { if (para.length) { html += `<p>${inline(para.join(" "))}</p>`; para = []; } };
-  const closeList = () => { if (inList) { html += "</ul>"; inList = false; } };
+  const closeAll = () => { while (depth > 0) { html += "</li></ul>"; depth--; } };
+  const addItem = (level, txt) => {
+    flush();
+    while (depth > level) { html += "</li></ul>"; depth--; }
+    if (depth < level) { while (depth < level) { html += "<ul>"; depth++; } }
+    else { html += "</li>"; }
+    html += `<li>${inline(txt)}`;
+  };
   for (const raw of lines) {
     const line = raw.trim();
-    if (!line) { flush(); closeList(); continue; }
-    if (line.startsWith("### ")) { flush(); closeList(); html += `<h3>${inline(line.slice(4))}</h3>`; }
-    else if (line.startsWith("## ")) { flush(); closeList(); html += `<h2>${inline(line.slice(3))}</h2>`; }
+    if (!line) { flush(); closeAll(); continue; }
+    if (line.startsWith("### ")) { flush(); closeAll(); html += `<h3>${inline(line.slice(4))}</h3>`; }
+    else if (line.startsWith("## ")) { flush(); closeAll(); html += `<h2>${inline(line.slice(3))}</h2>`; }
+    else if (line.startsWith("> ")) { flush(); closeAll(); html += `<div class="note">${inline(line.slice(2))}</div>`; }
     else if (line.startsWith("- ")) {
-      flush();
-      if (!inList) { html += "<ul>"; inList = true; }
-      html += `<li>${inline(line.slice(2))}</li>`;
+      const indent = raw.match(/^\s*/)[0].replace(/\t/g, "  ").length;
+      addItem(indent >= 2 ? 2 : 1, line.slice(2));
     }
-    else if (line.startsWith("> ")) { flush(); closeList(); html += `<div class="note">${inline(line.slice(2))}</div>`; }
-    else { closeList(); para.push(line); }
+    else { closeAll(); para.push(line); }
   }
-  flush(); closeList();
+  flush(); closeAll();
   return html;
 }
 
@@ -730,6 +750,37 @@ function resetForm() {
 }
 
 $("reset-btn").addEventListener("click", resetForm);
+
+function wrapSel(before, after, placeholder) {
+  const ta = $("content");
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  const sel = ta.value.slice(s, e) || placeholder;
+  ta.setRangeText(before + sel + after, s, e, "select");
+  ta.focus();
+}
+function linePrefix(prefix) {
+  const ta = $("content");
+  const lineStart = ta.value.lastIndexOf("\n", ta.selectionStart - 1) + 1;
+  ta.setRangeText(prefix, lineStart, lineStart, "end");
+  ta.focus();
+}
+$("toolbar").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-fmt]");
+  if (!b) return;
+  switch (b.dataset.fmt) {
+    case "bold": return wrapSel("**", "**", "bold text");
+    case "h2": return linePrefix("## ");
+    case "h3": return linePrefix("### ");
+    case "bullet": return linePrefix("- ");
+    case "sub": return linePrefix("  - ");
+    case "note": return linePrefix("> ");
+    case "link": {
+      const url = prompt("Link ka URL likhein:", "https://");
+      if (url) wrapSel("[", `](${url})`, "link text");
+      return;
+    }
+  }
+});
 
 const SAMPLE_TEMPLATE = `## Overview
 Yahan scheme ya khabar ki mukammal tafseel likhein. Ek khali line se naya paragraph shuru hota hai.

@@ -244,7 +244,8 @@ input[type=file]{padding:.5rem}
 .sort-select{width:auto;margin:0 0 .9rem;display:block}
 
 .weather{display:flex;align-items:center;gap:.4rem;background:var(--g100);color:var(--g900);padding:.4rem .8rem;border-radius:999px;font-size:.85rem;font-weight:600;white-space:nowrap}
-.weather .w-ic{font-size:1.05rem}
+.weather .w-ic{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px}
+.weather .w-ic svg{width:20px;height:20px}
 @media(max-width:560px){.weather{display:none!important}}
 
 /* TOAST */
@@ -1516,13 +1517,25 @@ $("post-sort").addEventListener("change", (e) => { postSortMode = e.target.value
 $("job-sort").addEventListener("change", (e) => { jobSortMode = e.target.value; renderAdminJobs(); });
 
 // Header weather: poore Punjab ke bade shehar (Open-Meteo, bina API key ke)
+const WX_ICON = (body) => `<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">${body}</svg>`;
+const SUN = `<circle cx="12" cy="12" r="4.6" fill="#f4b400"/><g stroke="#f4b400" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g>`;
+const CLOUD = `<path d="M7 18.5h10.2a4 4 0 0 0 .4-8 5.6 5.6 0 0 0-10.7 1.7A3.3 3.3 0 0 0 7 18.5z" fill="#dbe3ec" stroke="#8a9bb0" stroke-width="1.2" stroke-linejoin="round"/>`;
+const ICON = {
+  sun: WX_ICON(SUN),
+  partly: WX_ICON(`<circle cx="9" cy="8.5" r="3.4" fill="#f4b400"/><g stroke="#f4b400" stroke-width="1.6" stroke-linecap="round"><path d="M9 2.4v1.2M3.2 8.5h1.2M4.9 4.4l.9.9M13.1 4.4l-.9.9"/></g>${CLOUD}`),
+  cloud: WX_ICON(CLOUD),
+  fog: WX_ICON(`<g stroke="#8a9bb0" stroke-width="2" stroke-linecap="round"><path d="M4 9h16M6 13h12M3 17h14"/></g>`),
+  drizzle: WX_ICON(`${CLOUD}<g fill="#4a90d9"><circle cx="8" cy="20.5" r="1.1"/><circle cx="12" cy="21.5" r="1.1"/><circle cx="16" cy="20.5" r="1.1"/></g>`),
+  rain: WX_ICON(`${CLOUD}<g stroke="#2f7bd1" stroke-width="1.8" stroke-linecap="round"><path d="M8 19.5l-1 2.2M12 19.5l-1 2.2M16 19.5l-1 2.2"/></g>`),
+  storm: WX_ICON(`${CLOUD}<path d="M12.6 17l-2 3.4h2l-1.4 2.9 3.6-4h-2.1l1.1-2.3z" fill="#f4b400"/>`)
+};
 const WX_CODES = {
-  0: ["Saaf asmaan", "☀️"], 1: ["Zyada tar saaf", "🌤️"], 2: ["Thoda badal", "⛅"], 3: ["Badal", "☁️"],
-  45: ["Dhund", "🌫️"], 48: ["Dhund", "🌫️"],
-  51: ["Halki boonda-bandi", "🌦️"], 53: ["Boonda-bandi", "🌦️"], 55: ["Boonda-bandi", "🌧️"],
-  61: ["Halki baarish", "🌧️"], 63: ["Baarish", "🌧️"], 65: ["Tez baarish", "🌧️"],
-  80: ["Baarish", "🌦️"], 81: ["Baarish", "🌧️"], 82: ["Tez baarish", "⛈️"],
-  95: ["Toofan", "⛈️"], 96: ["Toofan", "⛈️"], 99: ["Toofan", "⛈️"]
+  0: ["Saaf asmaan", ICON.sun], 1: ["Zyada tar saaf", ICON.partly], 2: ["Thoda badal", ICON.partly], 3: ["Badal", ICON.cloud],
+  45: ["Dhund", ICON.fog], 48: ["Dhund", ICON.fog],
+  51: ["Halki boonda-bandi", ICON.drizzle], 53: ["Boonda-bandi", ICON.drizzle], 55: ["Boonda-bandi", ICON.drizzle],
+  61: ["Halki baarish", ICON.rain], 63: ["Baarish", ICON.rain], 65: ["Tez baarish", ICON.rain],
+  80: ["Baarish", ICON.rain], 81: ["Baarish", ICON.rain], 82: ["Tez baarish", ICON.storm],
+  95: ["Toofan", ICON.storm], 96: ["Toofan", ICON.storm], 99: ["Toofan", ICON.storm]
 };
 const PUNJAB_CITIES = [
   { name: "Lahore", lat: 31.5204, lon: 74.3587 },
@@ -1552,7 +1565,7 @@ async function loadWeather() {
   const settled = await Promise.allSettled(PUNJAB_CITIES.map(async (c) => {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&timezone=auto`;
     const d = await (await fetch(url)).json();
-    const [label, icon] = WX_CODES[d.current.weather_code] || ["Mausam", "🌡️"];
+    const [label, icon] = WX_CODES[d.current.weather_code] || ["Mausam", ICON.cloud];
     return { name: c.name, temp: d.current.temperature_2m, label, icon };
   }));
   weatherList = settled.filter((r) => r.status === "fulfilled").map((r) => r.value);

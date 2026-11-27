@@ -277,7 +277,7 @@ input[type=file]{padding:.5rem}
         <span id="u-name"></span>
         <button id="g-logout" class="btn-ghost" type="button">Logout</button>
       </div>
-      <a href="#admin" class="nav-admin">Admin</a>
+      
     </nav>
   </div>
 </header>
@@ -336,7 +336,7 @@ input[type=file]{padding:.5rem}
   <footer id="contact" class="footer">
     <div class="container footer-inner">
       <div><strong>Punjab Portal</strong><p>© <span id="year"></span> Punjab Portal. Sarvhuqooq mehfooz hain.</p></div>
-      <a href="#admin" class="footer-link">Admin Login →</a>
+      
     </div>
   </footer>
 </div>
@@ -882,6 +882,16 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
   if (!(await isAdmin(user.uid))) {
+    // Google se login karne wale visitor ko admin page nahi dikhana
+    if (isGoogleUser(user)) {
+      if (location.hash === "#admin") {
+        history.replaceState(null, "", location.pathname + location.search);
+        route();
+      }
+      return;
+    }
+    // Admin email ke alawa koi aur email/password account
+    await signOut(auth);
     $("login-view").hidden = false;
     $("dash-view").hidden = true;
     $("login-error").textContent = "Ye account admin nahi hai.";

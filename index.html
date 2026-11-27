@@ -241,6 +241,8 @@ input[type=file]{padding:.5rem}
 .user-cell img{width:36px;height:36px;border-radius:50%;object-fit:cover}
 @media(max-width:720px){.users-tools input{width:100%}}
 
+.sort-select{width:auto;margin:0 0 .9rem;display:block}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
 .toast.show{transform:translate(-50%,0)}
@@ -486,6 +488,7 @@ input[type=file]{padding:.5rem}
         </form>
         <section class="panel">
           <h2>Saari Jobs</h2>
+          <select id="job-sort" class="sort-select"><option value="new">Naye pehle</option><option value="views">Zyada dekhi gayi pehle</option></select>
           <div id="job-admin-list" class="list"></div>
         </section>
       </section>
@@ -591,6 +594,7 @@ input[type=file]{padding:.5rem}
 
         <section class="panel">
           <h2>Saare Posts</h2>
+          <select id="post-sort" class="sort-select"><option value="new">Naye pehle</option><option value="views">Zyada dekhi gayi pehle</option></select>
           <div id="post-list" class="list"></div>
         </section>
       </div>
@@ -604,7 +608,7 @@ input[type=file]{padding:.5rem}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
-  query, where, serverTimestamp, setDoc
+  query, where, serverTimestamp, setDoc, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
@@ -854,6 +858,7 @@ async function showPost(id) {
     $("pp-content").innerHTML = renderContent(p.content);
     $("pp-closed").hidden = p.status !== "closed";
     document.title = `${p.title} | Punjab Portal`;
+    countView("posts", id);
   } catch {
     $("pp-title").textContent = "Post dastiyab nahi hai";
     $("pp-crumb-title").textContent = "";
@@ -940,11 +945,12 @@ function renderAdminList() {
     $("post-list").innerHTML = `<p class="empty">Abhi koi post nahi. Naya post banayein.</p>`;
     return;
   }
-  $("post-list").innerHTML = adminPosts.map((p) => `
+  const list = postSortMode === "views" ? [...adminPosts].sort((a, b) => (b.views || 0) - (a.views || 0)) : adminPosts;
+  $("post-list").innerHTML = list.map((p) => `
     <div class="row" data-id="${esc(p.id)}">
       <div class="row-main">
         <strong>${esc(p.title)}</strong>
-        <small>${esc(p.category)} · ${p.status === "closed" ? "Closed" : "Open"} · ${fmtDate(p.createdAt)}</small>
+        <small>${esc(p.category)} · ${p.status === "closed" ? "Closed" : "Open"} · ${fmtDate(p.createdAt)} · 👁 ${p.views || 0}</small>
       </div>
       <span class="badge ${p.published ? "live" : "draft"}">${p.published ? "Live" : "Draft"}</span>
       <div class="row-actions">
@@ -1193,6 +1199,7 @@ async function showJob(id) {
     $("jp-title").textContent = j.title;
     $("jp-crumb").textContent = j.title;
     document.title = `${j.title} | Punjab Portal`;
+    countView("jobs", id);
 
     if (st.closed) {
       const msg = j.status === "closed"
@@ -1240,13 +1247,14 @@ function renderAdminJobs() {
     $("job-admin-list").innerHTML = `<p class="empty">Abhi koi job nahi. Nayi job add karein.</p>`;
     return;
   }
-  $("job-admin-list").innerHTML = adminJobs.map((j) => {
+  const jobList = jobSortMode === "views" ? [...adminJobs].sort((a, b) => (b.views || 0) - (a.views || 0)) : adminJobs;
+  $("job-admin-list").innerHTML = jobList.map((j) => {
     const st = jobStatus(j);
     return `
     <div class="row" data-id="${esc(j.id)}">
       <div class="row-main">
         <strong>${esc(j.title)}</strong>
-        <small>${esc(j.org)} · Last date: ${esc(fmtLast(j.lastDate))} · ${esc(st.text)}</small>
+        <small>${esc(j.org)} · Last date: ${esc(fmtLast(j.lastDate))} · ${esc(st.text)} · 👁 ${j.views || 0}</small>
       </div>
       <span class="badge ${j.published ? "live" : "draft"}">${j.published ? "Live" : "Draft"}</span>
       <div class="row-actions">
@@ -1485,6 +1493,22 @@ $("user-export").addEventListener("click", () => {
   a.click();
   URL.revokeObjectURL(url);
 });
+
+// =====================================================
+// VIEWS COUNT
+// =====================================================
+const countedViews = new Set();
+function countView(col, id) {
+  const key = col + ":" + id;
+  if (countedViews.has(key)) return; // ek session mein ek view
+  countedViews.add(key);
+  updateDoc(doc(db, col, id), { views: increment(1) }).catch(() => {});
+}
+
+let postSortMode = "new";
+let jobSortMode = "new";
+$("post-sort").addEventListener("change", (e) => { postSortMode = e.target.value; renderAdminList(); });
+$("job-sort").addEventListener("change", (e) => { jobSortMode = e.target.value; renderAdminJobs(); });
 
 // ---------- START ----------
 route();

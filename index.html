@@ -243,9 +243,9 @@ input[type=file]{padding:.5rem}
 
 .sort-select{width:auto;margin:0 0 .9rem;display:block}
 
-.topbar{overflow:hidden}
-.topbar::before{content:"";position:absolute;inset:0;background:var(--wm,none) center/auto 92% no-repeat;opacity:.09;pointer-events:none;z-index:0}
-.topbar .nav-wrap{position:relative;z-index:1}
+.weather{display:flex;align-items:center;gap:.4rem;background:var(--g100);color:var(--g900);padding:.4rem .8rem;border-radius:999px;font-size:.85rem;font-weight:600;white-space:nowrap}
+.weather .w-ic{font-size:1.05rem}
+@media(max-width:560px){.weather{display:none!important}}
 
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
@@ -277,6 +277,7 @@ input[type=file]{padding:.5rem}
       <a href="#jobs">Jobs Update</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
+      <div id="weather" class="weather" hidden></div>
       <button id="g-login" class="btn-google" type="button">Google se Login</button>
       <div id="u-box" class="user-box" hidden>
         <img id="u-photo" alt="" hidden />
@@ -1514,8 +1515,53 @@ let jobSortMode = "new";
 $("post-sort").addEventListener("change", (e) => { postSortMode = e.target.value; renderAdminList(); });
 $("job-sort").addEventListener("change", (e) => { jobSortMode = e.target.value; renderAdminJobs(); });
 
-// Header watermark: logo ko header ke background mein halka dikhana
-document.querySelector(".topbar").style.setProperty("--wm", `url("${document.querySelector(".site-logo").src}")`);
+// Header weather: poore Punjab ke bade shehar (Open-Meteo, bina API key ke)
+const WX_CODES = {
+  0: ["Saaf asmaan", "☀️"], 1: ["Zyada tar saaf", "🌤️"], 2: ["Thoda badal", "⛅"], 3: ["Badal", "☁️"],
+  45: ["Dhund", "🌫️"], 48: ["Dhund", "🌫️"],
+  51: ["Halki boonda-bandi", "🌦️"], 53: ["Boonda-bandi", "🌦️"], 55: ["Boonda-bandi", "🌧️"],
+  61: ["Halki baarish", "🌧️"], 63: ["Baarish", "🌧️"], 65: ["Tez baarish", "🌧️"],
+  80: ["Baarish", "🌦️"], 81: ["Baarish", "🌧️"], 82: ["Tez baarish", "⛈️"],
+  95: ["Toofan", "⛈️"], 96: ["Toofan", "⛈️"], 99: ["Toofan", "⛈️"]
+};
+const PUNJAB_CITIES = [
+  { name: "Lahore", lat: 31.5204, lon: 74.3587 },
+  { name: "Faisalabad", lat: 31.4504, lon: 73.1350 },
+  { name: "Rawalpindi", lat: 33.5651, lon: 73.0169 },
+  { name: "Multan", lat: 30.1575, lon: 71.5249 },
+  { name: "Gujranwala", lat: 32.1877, lon: 74.1945 },
+  { name: "Sargodha", lat: 32.0740, lon: 72.6861 },
+  { name: "Bahawalpur", lat: 29.3956, lon: 71.6836 },
+  { name: "Sialkot", lat: 32.4945, lon: 74.5229 },
+  { name: "Sahiwal", lat: 30.6682, lon: 73.1114 },
+  { name: "D.G. Khan", lat: 30.0561, lon: 70.6349 }
+];
+let weatherList = [];
+let weatherIdx = 0;
+
+function showWeather() {
+  const box = $("weather");
+  if (!weatherList.length) { box.hidden = true; return; }
+  const w = weatherList[weatherIdx % weatherList.length];
+  box.innerHTML = `<span class="w-ic">${w.icon}</span><span>${Math.round(w.temp)}°C · ${esc(w.name)}</span>`;
+  box.title = weatherList.map((x) => `${x.name}: ${Math.round(x.temp)}°C`).join(" · ");
+  box.hidden = false;
+}
+
+async function loadWeather() {
+  const settled = await Promise.allSettled(PUNJAB_CITIES.map(async (c) => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code&timezone=auto`;
+    const d = await (await fetch(url)).json();
+    const [label, icon] = WX_CODES[d.current.weather_code] || ["Mausam", "🌡️"];
+    return { name: c.name, temp: d.current.temperature_2m, label, icon };
+  }));
+  weatherList = settled.filter((r) => r.status === "fulfilled").map((r) => r.value);
+  showWeather();
+}
+
+loadWeather();
+setInterval(loadWeather, 30 * 60 * 1000);
+setInterval(() => { weatherIdx++; showWeather(); }, 4000);
 
 // ---------- START ----------
 route();

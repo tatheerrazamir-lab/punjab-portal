@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Punjab Portal | All About Punjab At One Place</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{--g950:#06331a;--g900:#0b4d26;--g700:#0f7a3d;--g500:#1aa34a;--g100:#e6f5ec;--gold:#f4b400;--cream:#fbf8ef;--ink:#1d2a20;--muted:#6b7a70;--line:#e3e9e4;--danger:#d6373b;--radius:16px;--shadow:0 10px 30px rgba(11,77,38,.10);--shadow-h:0 18px 40px rgba(11,77,38,.18)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Noto Sans","Segoe UI",system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+body.no-scroll{overflow:hidden}
+a{color:inherit;text-decoration:none}
+[hidden]{display:none!important}
+.container{width:min(1200px,92%);margin:0 auto}
+.muted{color:var(--muted);font-size:.9rem}
+.empty{text-align:center;padding:3rem 1rem;color:var(--muted);grid-column:1/-1}
+.error{color:var(--danger);min-height:1.2em;margin:0}
+.btn-primary,.btn-ghost,.btn-danger{border:none;cursor:pointer;font:inherit;font-weight:600;padding:.6rem 1.1rem;border-radius:10px;transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,var(--g700),var(--g500));color:#fff;box-shadow:0 6px 16px rgba(15,122,61,.3)}
+.btn-primary:hover{transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.6;cursor:wait}
+.btn-primary.full{width:100%;margin-top:.5rem}
+.btn-ghost{background:var(--g100);color:var(--g900)}
+.btn-ghost:hover{background:#d3eddc}
+.btn-danger{background:#fdecec;color:var(--danger)}
+.btn-danger:hover{background:#fbd5d5}
+.brand-mark{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--g900),var(--g500));color:var(--gold);font-weight:700;letter-spacing:1px;flex-shrink:0}
+.brand-mark.big{width:64px;height:64px;margin:0 auto 1rem;font-size:1.4rem}
+
+/* HEADER */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:.75rem}
+.brand strong{display:block;font-size:1.15rem;color:var(--g900);line-height:1.1}
+.brand small{color:var(--muted);font-size:.75rem}
+.nav{display:flex;gap:1.6rem;align-items:center}
+.nav a{font-weight:600;color:var(--g900)}
+.nav-admin{background:var(--g900);color:#fff!important;padding:.45rem 1rem;border-radius:999px}
+.menu-btn{display:none;background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--g900)}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;color:#fff;padding:5.5rem 0 6.5rem;background:radial-gradient(circle at 15% 20%,rgba(244,180,0,.25),transparent 40%),radial-gradient(circle at 85% 80%,rgba(26,163,74,.5),transparent 45%),linear-gradient(135deg,var(--g950),var(--g700))}
+.hero::before{content:"";position:absolute;inset:0;opacity:.08;background-image:repeating-linear-gradient(45deg,#fff 0 2px,transparent 2px 22px)}
+.hero-inner{position:relative;text-align:center}
+.eyebrow{display:inline-block;font-size:.85rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);padding:.3rem .9rem;border-radius:999px;margin-bottom:1rem}
+.hero h1{font-size:clamp(2.4rem,6vw,4rem);margin:0 0 .5rem}
+.hero h1::after{content:"";display:block;width:90px;height:4px;margin:.8rem auto 0;background:var(--gold);border-radius:4px}
+.hero p{font-size:1.15rem;opacity:.92;max-width:620px;margin:1rem auto 2rem}
+.search-box{display:flex;align-items:center;gap:.6rem;max-width:560px;margin:0 auto;background:#fff;border-radius:999px;padding:.4rem 1.2rem;box-shadow:0 16px 40px rgba(0,0,0,.25)}
+.search-box input{flex:1;border:none;outline:none;font:inherit;font-size:1rem;padding:.7rem 0;color:var(--ink)}
+
+/* MAIN */
+.main{margin-top:-3rem;position:relative;z-index:2;padding-bottom:4rem}
+.section-head{background:#fff;border-radius:var(--radius);padding:1.4rem 1.6rem;box-shadow:var(--shadow);display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;margin-bottom:2rem}
+.section-head h2{margin:0;color:var(--g900)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{border:1px solid var(--line);background:#fff;color:var(--g900);padding:.4rem .9rem;border-radius:999px;cursor:pointer;font:inherit;font-size:.88rem}
+.chip.active{background:var(--g700);color:#fff;border-color:var(--g700)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.6rem}
+.card{background:#fff;border-radius:var(--radius);overflow:hidden;cursor:pointer;box-shadow:var(--shadow);transition:transform .3s,box-shadow .3s}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-h)}
+.card-img{position:relative;height:190px;background-size:cover;background-position:center;background-color:var(--g900);background-image:linear-gradient(135deg,var(--g950),var(--g500))}
+.card-placeholder{position:absolute;inset:0;display:grid;place-items:center;font-size:3.5rem;opacity:.9}
+.tag{position:absolute;top:12px;left:12px;background:#fff;color:var(--g900);font-size:.78rem;font-weight:700;padding:.3rem .7rem;border-radius:8px}
+.tag-dark{position:static;display:inline-block;background:var(--g100)}
+.card-body{padding:1.2rem 1.3rem 1.4rem}
+.card-body h3{margin:0 0 .4rem;font-size:1.1rem;color:var(--g900);line-height:1.35}
+.card-body p{margin:0 0 1rem;color:var(--muted);font-size:.93rem;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-foot{display:flex;justify-content:space-between;align-items:center}
+.read-more{color:var(--g700);font-weight:700;font-size:.9rem}
+
+/* ABOUT / FOOTER */
+.about{background:linear-gradient(180deg,var(--g100),var(--cream));padding:4rem 0}
+.about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:2rem;align-items:center}
+.about h2{color:var(--g900);margin-top:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.stats div{background:#fff;border-radius:var(--radius);padding:1.2rem;text-align:center;box-shadow:var(--shadow);border-bottom:4px solid var(--gold)}
+.stats strong{display:block;color:var(--g900);font-size:1.1rem}
+.stats span{color:var(--muted);font-size:.85rem}
+.footer{background:var(--g950);color:#cfe6d7;padding:2.2rem 0}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer strong{color:#fff;font-size:1.05rem}
+.footer p{margin:.3rem 0 0;font-size:.9rem}
+.footer-link{color:var(--gold);font-weight:700}
+
+/* MODAL */
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal.open{opacity:1;pointer-events:auto}
+.modal-backdrop{position:absolute;inset:0;background:rgba(6,51,26,.6);backdrop-filter:blur(4px)}
+.modal-box{position:relative;background:#fff;width:min(720px,100%);max-height:90vh;overflow:auto;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+.modal-img{width:100%;height:280px;object-fit:cover;display:block}
+.modal-body{padding:1.6rem 1.8rem 2rem}
+.modal-body h2{color:var(--g900);margin:.6rem 0 .2rem;line-height:1.3}
+.m-summary{font-weight:600;color:var(--g700);margin:1rem 0 .6rem}
+.m-content{white-space:pre-line}
+.modal-x{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;border:none;background:rgba(255,255,255,.95);cursor:pointer;font-size:1rem;color:var(--g900)}
+
+/* ADMIN */
+#admin{background:#f1f5f2;min-height:100vh}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:1rem;background:linear-gradient(135deg,var(--g950),var(--g700))}
+.login-card{background:#fff;width:min(400px,100%);padding:2.2rem 2rem;border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.3);text-align:center}
+.login-card h1{margin:0;color:var(--g900);font-size:1.6rem}
+.login-card label,.panel label{display:block;text-align:left;font-weight:600;font-size:.9rem;margin-bottom:.9rem;color:var(--g900)}
+.back-link{display:block;margin-top:1.2rem;color:var(--muted);font-size:.9rem}
+input,textarea,select{width:100%;margin-top:.35rem;padding:.65rem .8rem;border:1px solid var(--line);border-radius:10px;font:inherit;color:var(--ink);background:#fff}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--g500);box-shadow:0 0 0 3px rgba(26,163,74,.18)}
+textarea{resize:vertical}
+input[type=file]{padding:.5rem}
+.check{display:flex!important;align-items:center;gap:.6rem;font-weight:600}
+.check input{width:auto;margin:0}
+.admin-top{background:linear-gradient(135deg,var(--g950),var(--g700));color:#fff;padding:.9rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.admin-brand{display:flex;align-items:center;gap:.7rem}
+.admin-brand strong{display:block;line-height:1.1}
+.admin-brand small{opacity:.8}
+.admin-right{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
+.admin-right .muted{color:#cfe6d7}
+.admin-right .btn-ghost{background:rgba(255,255,255,.15);color:#fff}
+.admin-right .btn-danger{background:#fff}
+.admin-main{max-width:1280px;margin:0 auto;padding:1.5rem}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.stat{background:#fff;border-radius:14px;padding:1.1rem 1.3rem;box-shadow:var(--shadow);border-left:5px solid var(--g500)}
+.stat span{color:var(--muted);font-size:.85rem}
+.stat strong{display:block;font-size:1.8rem;color:var(--g900)}
+.admin-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:1.5rem;align-items:start}
+.panel{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:var(--shadow)}
+.panel h2{margin-top:0;color:var(--g900);font-size:1.2rem}
+.preview{width:100%;height:160px;object-fit:cover;border-radius:12px;margin:-.4rem 0 1rem}
+.form-actions{display:flex;gap:.6rem}
+.form-actions .btn-primary{flex:1}
+.list{display:flex;flex-direction:column;gap:.7rem;max-height:75vh;overflow:auto;padding-right:.3rem}
+.row{display:grid;grid-template-columns:1fr auto;gap:.5rem .8rem;align-items:center;border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}
+.row:hover{border-color:var(--g500)}
+.row-main strong{display:block;color:var(--g900);line-height:1.3}
+.row-main small{color:var(--muted)}
+.badge{font-size:.75rem;font-weight:700;padding:.25rem .6rem;border-radius:999px}
+.badge.live{background:#d9f5e3;color:var(--g700)}
+.badge.draft{background:#fff3cf;color:#8a6400}
+.row-actions{grid-column:1/-1;display:flex;gap:.4rem;flex-wrap:wrap}
+.row-actions button{padding:.4rem .75rem;font-size:.85rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
+.toast.show{transform:translate(-50%,0)}
+.toast.err{background:var(--danger)}
+
+@media(max-width:900px){.about-grid,.admin-grid{grid-template-columns:1fr}}
+@media(max-width:720px){
+ .menu-btn{display:block}
+ .nav{position:absolute;top:72px;left:0;right:0;background:#fff;flex-direction:column;padding:1rem 0;gap:1rem;border-bottom:1px solid var(--line);transform:translateY(-120%);transition:transform .3s;z-index:49;visibility:hidden}
+ .nav.open{transform:none;visibility:visible}
+ .stats,.stats-row{grid-template-columns:1fr}
+ .hero{padding:4rem 0 5rem}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container nav-wrap">
+    <a href="#" class="brand">
+      <span class="brand-mark">PP</span>
+      <span><strong>Punjab Portal</strong><small>All About Punjab At One Place</small></span>
+    </a>
+    <button id="menu-btn" class="menu-btn" aria-label="Menu">☰</button>
+    <nav id="nav" class="nav">
+      <a href="#posts">Posts</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <a href="#admin" class="nav-admin">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ===================== USER PANEL ===================== -->
+<div id="site">
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="eyebrow">Flagship Projects · Khabrein · Services</span>
+      <h1>Punjab Portal</h1>
+      <p>Punjab ki taza khabrein, sarkari scheemein aur ahem maloomat, ek hi jagah par.</p>
+      <div class="search-box">
+        <span>🔍</span>
+        <input id="search" type="search" placeholder="Posts mein talash karein…" autocomplete="off" />
+      </div>
+    </div>
+  </section>
+
+  <main id="posts" class="container main">
+    <div class="section-head">
+      <div><h2>Latest Posts</h2><span id="count" class="muted"></span></div>
+      <div id="chips" class="chips"></div>
+    </div>
+    <div id="grid" class="grid"></div>
+  </main>
+
+  <section id="about" class="about">
+    <div class="container about-grid">
+      <div>
+        <h2>Punjab Portal ke baare mein</h2>
+        <p>Ye platform Punjab ke shehriyon ko sarkari scheemon, faislon aur sahuliyaat ki tafseelat ek jagah farahem karne ke liye banaya gaya hai.</p>
+      </div>
+      <div class="stats">
+        <div><strong>Punjab</strong><span>Province</span></div>
+        <div><strong>Citizen</strong><span>Focused</span></div>
+        <div><strong>24/7</strong><span>Online Access</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact" class="footer">
+    <div class="container footer-inner">
+      <div><strong>Punjab Portal</strong><p>© <span id="year"></span> Punjab Portal. Sarvhuqooq mehfooz hain.</p></div>
+      <a href="#admin" class="footer-link">Admin Login →</a>
+    </div>
+  </footer>
+
+  <div id="modal" class="modal">
+    <div class="modal-backdrop" data-close></div>
+    <article class="modal-box" role="dialog" aria-modal="true">
+      <button class="modal-x" data-close aria-label="Close">✕</button>
+      <img id="m-img" class="modal-img" alt="" hidden />
+      <div class="modal-body">
+        <span id="m-cat" class="tag tag-dark"></span>
+        <h2 id="m-title"></h2>
+        <small id="m-date" class="muted"></small>
+        <p id="m-summary" class="m-summary"></p>
+        <div id="m-content" class="m-content"></div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<!-- ===================== ADMIN PANEL ===================== -->
+<div id="admin" hidden>
+  <section id="login-view" class="login-wrap" hidden>
+    <form id="login-form" class="login-card">
+      <div class="brand-mark big">PP</div>
+      <h1>Admin Login</h1>
+      <p class="muted">Punjab Portal admin panel</p>
+      <label>Email <input id="email" type="email" required autocomplete="username" /></label>
+      <label>Password <input id="password" type="password" required autocomplete="current-password" /></label>
+      <p id="login-error" class="error"></p>
+      <button type="submit" class="btn-primary full">Login</button>
+      <a href="#" class="back-link">← Website par wapas jayein</a>
+    </form>
+  </section>
+
+  <section id="dash-view" hidden>
+    <header class="admin-top">
+      <div class="admin-brand">
+        <span class="brand-mark">PP</span>
+        <div><strong>Punjab Portal</strong><small>Admin Panel</small></div>
+      </div>
+      <div class="admin-right">
+        <span id="who" class="muted"></span>
+        <a href="#" class="btn-ghost">Website</a>
+        <button id="logout-btn" class="btn-danger">Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <div class="stats-row">
+        <div class="stat"><span>Total Posts</span><strong id="stat-total">0</strong></div>
+        <div class="stat"><span>Live</span><strong id="stat-live">0</strong></div>
+        <div class="stat"><span>Drafts</span><strong id="stat-draft">0</strong></div>
+      </div>
+
+      <div class="admin-grid">
+        <form id="post-form" class="panel">
+          <h2 id="form-title">Naya post banayein</h2>
+          <input type="hidden" id="post-id" />
+          <input type="hidden" id="current-image" />
+
+          <label>Title *<input id="title" required maxlength="150" /></label>
+          <label>Category
+            <select id="category">
+              <option>General</option>
+              <option>Social Protection</option>
+              <option>Health</option>
+              <option>Youth</option>
+              <option>Citizen Facilitation</option>
+              <option>Education</option>
+              <option>Announcements</option>
+            </select>
+          </label>
+          <label>Summary (card par dikhega)<textarea id="summary" rows="2" maxlength="300"></textarea></label>
+          <label>Full content<textarea id="content" rows="8"></textarea></label>
+          <label>Image (optional)<input id="image" type="file" accept="image/*" /></label>
+          <img id="preview" class="preview" alt="" hidden />
+          <label class="check"><input id="published" type="checkbox" checked /><span>Publish karein (website par dikhayein)</span></label>
+
+          <div class="form-actions">
+            <button type="submit" id="save-btn" class="btn-primary">Save Post</button>
+            <button type="button" id="reset-btn" class="btn-ghost">Clear</button>
+          </div>
+        </form>
+
+        <section class="panel">
+          <h2>Saare Posts</h2>
+          <div id="post-list" class="list"></div>
+        </section>
+      </div>
+    </main>
+  </section>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
+  query, where, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+  getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// ---------- FIREBASE ----------
+const app = initializeApp({
+  apiKey: "AIzaSyD-8TLFoRX7sT7BsN_JxupBL-rBW6NQ7fM",
+  authDomain: "punjab-portal.firebaseapp.com",
+  projectId: "punjab-portal",
+  storageBucket: "punjab-portal.firebasestorage.app",
+  messagingSenderId: "534477090874",
+  appId: "1:534477090874:web:6de432431752a154814503"
+});
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ---------- HELPERS ----------
+const $ = (id) => document.getElementById(id);
+
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+function toMillis(v) {
+  if (!v) return Date.now();
+  if (v.toMillis) return v.toMillis();
+  return new Date(v).getTime();
+}
+function fmtDate(v) {
+  return new Date(toMillis(v)).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+function toast(msg, type = "ok") {
+  const t = $("toast");
+  t.textContent = msg;
+  t.className = `toast show ${type}`;
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => (t.className = "toast"), 3200);
+}
+function imageToDataUrl(file, maxSize = 800, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Image read nahi ho saki"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Ye image valid nahi hai"));
+      img.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+        const data = canvas.toDataURL("image/jpeg", quality);
+        if (data.length > 900000) return reject(new Error("Image bahut bari hai, chhoti image chunein"));
+        resolve(data);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ---------- ROUTING (#admin ya khali) ----------
+function route() {
+  const onAdmin = location.hash === "#admin";
+  $("site").hidden = onAdmin;
+  $("admin").hidden = !onAdmin;
+  if (!onAdmin) $("nav").classList.remove("open");
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+
+$("menu-btn").addEventListener("click", () => $("nav").classList.toggle("open"));
+$("year").textContent = new Date().getFullYear();
+
+// =====================================================
+// USER PANEL
+// =====================================================
+let posts = [];
+let category = "All";
+let searchText = "";
+
+async function loadPosts() {
+  $("grid").innerHTML = `<p class="empty">Loading…</p>`;
+  try {
+    // Sirf published posts. Sorting browser mein hoti hai, is liye extra index nahi chahiye.
+    const q = query(collection(db, "posts"), where("published", "==", true));
+    const snap = await getDocs(q);
+    posts = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
+    buildChips();
+    render();
+  } catch (e) {
+    $("grid").innerHTML = `<p class="empty">Posts load nahi hue: ${esc(e.message)}</p>`;
+  }
+}
+
+function buildChips() {
+  const cats = ["All", ...new Set(posts.map((p) => p.category))];
+  $("chips").innerHTML = cats
+    .map((c) => `<button class="chip ${c === category ? "active" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`)
+    .join("");
+}
+
+function filtered() {
+  const s = searchText.trim().toLowerCase();
+  return posts.filter((p) => {
+    const catOk = category === "All" || p.category === category;
+    const text = `${p.title} ${p.summary || ""} ${p.content || ""}`.toLowerCase();
+    return catOk && (!s || text.includes(s));
+  });
+}
+
+function render() {
+  const list = filtered();
+  $("count").textContent = `${list.length} post${list.length === 1 ? "" : "s"}`;
+  if (!list.length) {
+    $("grid").innerHTML = `<p class="empty">Koi post nahi mili.</p>`;
+    return;
+  }
+  $("grid").innerHTML = list.map((p, i) => {
+    const img = p.image_data || "";
+    return `
+    <article class="card" data-id="${esc(p.id)}" style="animation-delay:${i * 60}ms">
+      <div class="card-img" style="${img ? `background-image:url('${esc(img)}')` : ""}">
+        ${img ? "" : `<span class="card-placeholder">🇵🇰</span>`}
+        <span class="tag">${esc(p.category)}</span>
+      </div>
+      <div class="card-body">
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.summary || "")}</p>
+        <div class="card-foot"><small>${fmtDate(p.createdAt)}</small><span class="read-more">Read more →</span></div>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function openPost(id) {
+  const p = posts.find((x) => x.id === id);
+  if (!p) return;
+  $("m-cat").textContent = p.category;
+  $("m-title").textContent = p.title;
+  $("m-date").textContent = fmtDate(p.createdAt);
+  $("m-summary").textContent = p.summary || "";
+  $("m-content").textContent = p.content || "";
+  const img = $("m-img");
+  if (p.image_data) { img.src = p.image_data; img.hidden = false; }
+  else { img.hidden = true; img.removeAttribute("src"); }
+  $("modal").classList.add("open");
+  document.body.classList.add("no-scroll");
+}
+function closeModal() {
+  $("modal").classList.remove("open");
+  document.body.classList.remove("no-scroll");
+}
+
+$("grid").addEventListener("click", (e) => {
+  const card = e.target.closest("[data-id]");
+  if (card) openPost(card.dataset.id);
+});
+$("chips").addEventListener("click", (e) => {
+  const chip = e.target.closest("[data-cat]");
+  if (!chip) return;
+  category = chip.dataset.cat;
+  buildChips();
+  render();
+});
+$("search").addEventListener("input", (e) => {
+  searchText = e.target.value;
+  render();
+});
+$("modal").addEventListener("click", (e) => {
+  if (e.target.matches("[data-close], .modal-backdrop")) closeModal();
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+loadPosts();
+
+// =====================================================
+// ADMIN PANEL
+// =====================================================
+let adminPosts = [];
+
+async function isAdmin(uid) {
+  try {
+    const snap = await getDoc(doc(db, "admins", uid));
+    return snap.exists();
+  } catch {
+    return false;
+  }
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    $("login-view").hidden = false;
+    $("dash-view").hidden = true;
+    return;
+  }
+  if (!(await isAdmin(user.uid))) {
+    await signOut(auth);
+    $("login-error").textContent = "Ye account admin nahi hai.";
+    return;
+  }
+  $("who").textContent = user.email;
+  $("login-view").hidden = true;
+  $("dash-view").hidden = false;
+  loadAdminPosts();
+});
+
+$("login-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true;
+  $("login-error").textContent = "";
+  try {
+    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
+  } catch (err) {
+    $("login-error").textContent = "Login nahi hua. Email ya password check karein.";
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$("logout-btn").addEventListener("click", () => signOut(auth));
+
+async function loadAdminPosts() {
+  try {
+    const snap = await getDocs(collection(db, "posts"));
+    adminPosts = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
+    $("stat-total").textContent = adminPosts.length;
+    $("stat-live").textContent = adminPosts.filter((p) => p.published).length;
+    $("stat-draft").textContent = adminPosts.filter((p) => !p.published).length;
+    renderAdminList();
+  } catch (e) {
+    toast(e.message, "err");
+  }
+}
+
+function renderAdminList() {
+  if (!adminPosts.length) {
+    $("post-list").innerHTML = `<p class="empty">Abhi koi post nahi. Naya post banayein.</p>`;
+    return;
+  }
+  $("post-list").innerHTML = adminPosts.map((p) => `
+    <div class="row" data-id="${esc(p.id)}">
+      <div class="row-main">
+        <strong>${esc(p.title)}</strong>
+        <small>${esc(p.category)} · ${fmtDate(p.createdAt)}</small>
+      </div>
+      <span class="badge ${p.published ? "live" : "draft"}">${p.published ? "Live" : "Draft"}</span>
+      <div class="row-actions">
+        <button data-action="edit" class="btn-ghost">Edit</button>
+        <button data-action="toggle" class="btn-ghost">${p.published ? "Unpublish" : "Publish"}</button>
+        <button data-action="delete" class="btn-danger">Delete</button>
+      </div>
+    </div>`).join("");
+}
+
+$("post-list").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-action]");
+  if (!btn) return;
+  const post = adminPosts.find((p) => p.id === btn.closest("[data-id]").dataset.id);
+  if (!post) return;
+  try {
+    if (btn.dataset.action === "edit") fillForm(post);
+    if (btn.dataset.action === "toggle") {
+      await updateDoc(doc(db, "posts", post.id), { published: !post.published });
+      toast(post.published ? "Unpublish ho gaya" : "Publish ho gaya");
+      loadAdminPosts();
+    }
+    if (btn.dataset.action === "delete") {
+      if (!confirm(`"${post.title}" delete karna hai?`)) return;
+      await deleteDoc(doc(db, "posts", post.id));
+      toast("Post delete ho gaya");
+      if ($("post-id").value === post.id) resetForm();
+      loadAdminPosts();
+    }
+  } catch (err) {
+    toast(err.message, "err");
+  }
+});
+
+function fillForm(p) {
+  $("post-id").value = p.id;
+  $("title").value = p.title;
+  $("category").value = p.category;
+  $("summary").value = p.summary || "";
+  $("content").value = p.content || "";
+  $("published").checked = !!p.published;
+  $("current-image").value = p.image_data || "";
+  $("form-title").textContent = "Post edit karein";
+  $("save-btn").textContent = "Update Post";
+  $("image").value = "";
+  $("preview").src = p.image_data || "";
+  $("preview").hidden = !p.image_data;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function resetForm() {
+  $("post-form").reset();
+  $("post-id").value = "";
+  $("current-image").value = "";
+  $("form-title").textContent = "Naya post banayein";
+  $("save-btn").textContent = "Save Post";
+  $("preview").hidden = true;
+  $("published").checked = true;
+}
+
+$("reset-btn").addEventListener("click", resetForm);
+
+$("image").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  $("preview").src = URL.createObjectURL(file);
+  $("preview").hidden = false;
+});
+
+$("post-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = $("save-btn");
+  const id = $("post-id").value;
+  const isEdit = !!id;
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+  try {
+    let imageData = $("current-image").value || null;
+    const file = $("image").files[0];
+    if (file) imageData = await imageToDataUrl(file);
+
+    const payload = {
+      title: $("title").value.trim(),
+      category: $("category").value,
+      summary: $("summary").value.trim(),
+      content: $("content").value.trim(),
+      image_data: imageData,
+      published: $("published").checked,
+      updatedAt: serverTimestamp()
+    };
+
+    if (isEdit) {
+      await updateDoc(doc(db, "posts", id), payload);
+      toast("Post update ho gaya ✔");
+    } else {
+      payload.createdAt = serverTimestamp();
+      await addDoc(collection(db, "posts"), payload);
+      toast("Post save ho gaya ✔");
+    }
+    resetForm();
+    loadAdminPosts();
+  } catch (err) {
+    toast(err.message || "Kuch ghalat ho gaya", "err");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = isEdit ? "Update Post" : "Save Post";
+  }
+});
+</script>
+</body>
+</html>

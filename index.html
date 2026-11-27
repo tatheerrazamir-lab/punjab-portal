@@ -243,6 +243,10 @@ input[type=file]{padding:.5rem}
 
 .sort-select{width:auto;margin:0 0 .9rem;display:block}
 
+.topbar{overflow:hidden}
+.topbar::before{content:"";position:absolute;inset:0;background:var(--wm,none) center/auto 92% no-repeat;opacity:.09;pointer-events:none;z-index:0}
+.topbar .nav-wrap{position:relative;z-index:1}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
 .toast.show{transform:translate(-50%,0)}
@@ -1509,6 +1513,9 @@ let postSortMode = "new";
 let jobSortMode = "new";
 $("post-sort").addEventListener("change", (e) => { postSortMode = e.target.value; renderAdminList(); });
 $("job-sort").addEventListener("change", (e) => { jobSortMode = e.target.value; renderAdminJobs(); });
+
+// Header watermark: logo ko header ke background mein halka dikhana
+document.querySelector(".topbar").style.setProperty("--wm", `url("${document.querySelector(".site-logo").src}")`);
 
 // ---------- START ----------
 route();

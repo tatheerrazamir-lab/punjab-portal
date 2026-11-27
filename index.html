@@ -169,6 +169,32 @@ input[type=file]{padding:.5rem}
 .row-actions{grid-column:1/-1;display:flex;gap:.4rem;flex-wrap:wrap}
 .row-actions button,.row-actions a{padding:.4rem .75rem;font-size:.85rem}
 
+.jobs-bar{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;background:#fff;border-radius:var(--radius);padding:1rem 1.2rem;box-shadow:var(--shadow);margin:-3rem 0 1.5rem;position:relative;z-index:2}
+.jobs-bar input{flex:1;min-width:220px;margin:0}
+.hero-sub{opacity:.92;margin:.4rem 0 0;font-size:1.05rem}
+.job-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.4rem;padding-bottom:2rem}
+.job-card{background:#fff;border-radius:var(--radius);padding:1.3rem 1.4rem;box-shadow:var(--shadow);border-left:6px solid var(--g500);cursor:pointer;transition:transform .2s,box-shadow .2s}
+.job-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-h)}
+.job-top{display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap}
+.job-org{font-size:.78rem;font-weight:700;color:var(--g700);text-transform:uppercase;letter-spacing:.4px}
+.job-card h3{margin:.4rem 0 .8rem;color:var(--g900);font-size:1.15rem;line-height:1.35}
+.job-badge{font-size:.75rem;font-weight:700;padding:.25rem .65rem;border-radius:999px}
+.job-badge.open{background:#d9f5e3;color:var(--g700)}
+.job-badge.exp{background:#fdecec;color:var(--danger)}
+.job-facts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem .9rem;margin-bottom:.8rem}
+.job-facts small{display:block;color:var(--muted);font-size:.78rem}
+.job-facts strong{font-size:.95rem;color:var(--ink)}
+.job-foot{display:flex;justify-content:flex-end}
+.job-banner{background:#d6373b;color:#fff;font-weight:700;padding:.9rem 1.2rem;border-radius:12px;margin-bottom:1.2rem;text-align:center}
+.info-table{width:100%;border-collapse:collapse;margin:0 0 1.5rem;font-size:1rem}
+.info-table th,.info-table td{padding:.7rem .9rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.info-table th{width:34%;color:var(--g900);background:var(--g100)}
+.apply-btn{display:inline-block;background:linear-gradient(135deg,var(--g700),var(--g500));color:#fff!important;padding:.8rem 1.5rem;border-radius:12px;font-weight:700;margin:.4rem 0 1rem;text-decoration:none!important;box-shadow:0 8px 18px rgba(15,122,61,.3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.tabs{display:flex;gap:.6rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.tab{border:none;background:#fff;color:var(--g900);padding:.7rem 1.3rem;border-radius:12px;font:inherit;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+.tab.active{background:var(--g700);color:#fff}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
 .toast.show{transform:translate(-50%,0)}
@@ -176,6 +202,9 @@ input[type=file]{padding:.5rem}
 
 @media(max-width:900px){.about-grid,.admin-grid{grid-template-columns:1fr}}
 @media(max-width:720px){
+ .form-row{grid-template-columns:1fr}
+ .job-facts{grid-template-columns:1fr 1fr}
+ .jobs-bar{margin-top:-2rem}
  .menu-btn{display:block}
  .nav{position:absolute;top:72px;left:0;right:0;background:#fff;flex-direction:column;padding:1rem 0;gap:1rem;border-bottom:1px solid var(--line);transform:translateY(-120%);transition:transform .3s;z-index:49;visibility:hidden}
  .nav.open{transform:none;visibility:visible}
@@ -193,6 +222,7 @@ input[type=file]{padding:.5rem}
     <button id="menu-btn" class="menu-btn" aria-label="Menu">☰</button>
     <nav id="nav" class="nav">
       <a href="#posts">Posts</a>
+      <a href="#jobs">Jobs Update</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
       <a href="#admin" class="nav-admin">Admin</a>
@@ -244,6 +274,47 @@ input[type=file]{padding:.5rem}
   </footer>
 </div>
 
+<!-- ============ JOBS UPDATE PAGE ============ -->
+<div id="jobs-page" hidden>
+  <section class="pp-hero">
+    <div class="container">
+      <div class="crumb"><a href="#">Home</a> &nbsp;/&nbsp; <span class="cur">Jobs Update</span></div>
+      <h1>Jobs Update</h1>
+      <p class="hero-sub">Punjab ki sarkari naukriyan, taza tareen maloomat ke saath</p>
+    </div>
+  </section>
+  <div class="pp-body">
+    <div class="container">
+      <div class="jobs-bar">
+        <input id="job-search" type="search" placeholder="Job, organization, qualification ya shehar se talash karein…" autocomplete="off" />
+        <span id="job-count" class="muted"></span>
+      </div>
+      <div id="job-list" class="job-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ JOB DETAIL PAGE ============ -->
+<div id="job-page" hidden>
+  <section class="pp-hero">
+    <div class="container">
+      <div class="crumb"><a href="#">Home</a> &nbsp;/&nbsp; <a href="#jobs">Jobs Update</a> &nbsp;/&nbsp; <span class="cur" id="jp-crumb"></span></div>
+      <h1 id="jp-title"></h1>
+    </div>
+  </section>
+  <div class="pp-body">
+    <div class="container">
+      <article class="pp-article">
+        <div id="jp-status"></div>
+        <table class="info-table" id="jp-info"></table>
+        <div id="jp-apply"></div>
+        <div id="jp-content"></div>
+      </article>
+      <a href="#jobs" class="pp-back">← Tamam jobs par wapas jayein</a>
+    </div>
+  </div>
+</div>
+
 <!-- ============ POST PAGE (har post isi design mein) ============ -->
 <div id="post-page" hidden>
   <section class="pp-hero">
@@ -293,13 +364,71 @@ input[type=file]{padding:.5rem}
     </header>
 
     <main class="admin-main">
-      <div class="stats-row">
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="posts">Posts</button>
+        <button type="button" class="tab" data-tab="jobs">Jobs Update</button>
+      </div>
+
+      <section id="jobs-admin" class="admin-grid" hidden>
+        <form id="job-form" class="panel">
+          <h2 id="job-form-title">Nayi job add karein</h2>
+          <input type="hidden" id="job-id" />
+          <label>Job ka title *<input id="j-title" required maxlength="150" placeholder="e.g. Junior Clerk" /></label>
+          <label>Organization / Department *<input id="j-org" required maxlength="150" placeholder="e.g. Punjab Police" /></label>
+          <div class="form-row">
+            <label>Location<input id="j-location" placeholder="e.g. Lahore" /></label>
+            <label>Total posts<input id="j-vacancies" placeholder="e.g. 250" /></label>
+          </div>
+          <div class="form-row">
+            <label>Qualification<input id="j-qual" placeholder="e.g. Matric / BA" /></label>
+            <label>Age limit<input id="j-age" placeholder="e.g. 18 to 30 years" /></label>
+          </div>
+          <div class="form-row">
+            <label>Salary / Pay scale<input id="j-salary" placeholder="e.g. BPS-11" /></label>
+            <label>Last date *<input id="j-last" type="date" required /></label>
+          </div>
+          <label>Online apply link<input id="j-link" type="url" placeholder="https://..." /></label>
+          <label>Helpline / Contact<input id="j-contact" placeholder="e.g. 0800-00000" /></label>
+          <label>Tafseeli maloomat (details)
+            <div class="help">Formatting wahi hai jo posts mein hai. Eligibility, documents, fees waghera ko alag sections (## heading) mein likhein.</div>
+            <div class="toolbar" data-target="j-details">
+              <button type="button" data-fmt="bold" title="Bold"><b>B</b></button>
+              <button type="button" data-fmt="h2" title="Bara heading">Bara heading</button>
+              <button type="button" data-fmt="h3" title="Chhota heading">Chhota heading</button>
+              <button type="button" data-fmt="bullet" title="Bullet point">• List</button>
+              <button type="button" data-fmt="sub" title="Sub bullet">◦ Sub</button>
+              <button type="button" data-fmt="link" title="Link">🔗 Link</button>
+              <button type="button" data-fmt="note" title="Highlight box">Note</button>
+            </div>
+            <textarea id="j-details" rows="8"></textarea>
+          </label>
+          <div class="form-row">
+            <label>Applications ka status
+              <select id="j-status">
+                <option value="open">Open (applications chal rahi hain)</option>
+                <option value="closed">Closed (band hai)</option>
+              </select>
+            </label>
+            <label class="check" style="margin-top:1.6rem"><input id="j-published" type="checkbox" checked /><span>Publish karein</span></label>
+          </div>
+          <div class="form-actions">
+            <button type="submit" id="job-save" class="btn-primary">Save Job</button>
+            <button type="button" id="job-reset" class="btn-ghost">Clear</button>
+          </div>
+        </form>
+        <section class="panel">
+          <h2>Saari Jobs</h2>
+          <div id="job-admin-list" class="list"></div>
+        </section>
+      </section>
+
+      <div class="stats-row posts-only">
         <div class="stat"><span>Total Posts</span><strong id="stat-total">0</strong></div>
         <div class="stat"><span>Live</span><strong id="stat-live">0</strong></div>
         <div class="stat"><span>Drafts</span><strong id="stat-draft">0</strong></div>
       </div>
 
-      <div class="admin-grid">
+      <div class="admin-grid posts-only">
         <form id="post-form" class="panel">
           <h2 id="form-title">Naya post banayein</h2>
           <input type="hidden" id="post-id" />
@@ -494,18 +623,22 @@ function route() {
   const h = location.hash;
   const onAdmin = h === "#admin";
   const onPost = h.startsWith("#post/");
+  const onJobs = h === "#jobs";
+  const onJob = h.startsWith("#job/");
+  const onSub = onAdmin || onPost || onJobs || onJob;
 
-  $("site").hidden = onAdmin || onPost;
+  $("site").hidden = onSub;
   $("admin").hidden = !onAdmin;
   $("post-page").hidden = !onPost;
+  $("jobs-page").hidden = !onJobs;
+  $("job-page").hidden = !onJob;
   $("nav").classList.remove("open");
 
-  if (onPost) {
-    showPost(decodeURIComponent(h.slice(6)));
-    window.scrollTo(0, 0);
-  } else if (onAdmin) {
-    window.scrollTo(0, 0);
-  } else {
+  if (onPost) { showPost(decodeURIComponent(h.slice(6))); window.scrollTo(0, 0); }
+  else if (onJob) { showJob(decodeURIComponent(h.slice(5))); window.scrollTo(0, 0); }
+  else if (onJobs) { document.title = "Jobs Update | Punjab Portal"; loadJobs(); window.scrollTo(0, 0); }
+  else if (onAdmin) { window.scrollTo(0, 0); }
+  else {
     document.title = DEFAULT_TITLE;
     const target = /^#[a-z]+$/i.test(h) ? document.querySelector(h) : null;
     if (target) target.scrollIntoView();
@@ -777,32 +910,31 @@ function resetForm() {
 
 $("reset-btn").addEventListener("click", resetForm);
 
-function wrapSel(before, after, placeholder) {
-  const ta = $("content");
+function wrapSel(ta, before, after, placeholder) {
   const s = ta.selectionStart, e = ta.selectionEnd;
   const sel = ta.value.slice(s, e) || placeholder;
   ta.setRangeText(before + sel + after, s, e, "select");
   ta.focus();
 }
-function linePrefix(prefix) {
-  const ta = $("content");
+function linePrefix(ta, prefix) {
   const lineStart = ta.value.lastIndexOf("\n", ta.selectionStart - 1) + 1;
   ta.setRangeText(prefix, lineStart, lineStart, "end");
   ta.focus();
 }
-$("toolbar").addEventListener("click", (e) => {
-  const b = e.target.closest("button[data-fmt]");
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".toolbar button[data-fmt]");
   if (!b) return;
+  const ta = $(b.closest(".toolbar").dataset.target || "content");
   switch (b.dataset.fmt) {
-    case "bold": return wrapSel("**", "**", "bold text");
-    case "h2": return linePrefix("## ");
-    case "h3": return linePrefix("### ");
-    case "bullet": return linePrefix("- ");
-    case "sub": return linePrefix("  - ");
-    case "note": return linePrefix("> ");
+    case "bold": return wrapSel(ta, "**", "**", "bold text");
+    case "h2": return linePrefix(ta, "## ");
+    case "h3": return linePrefix(ta, "### ");
+    case "bullet": return linePrefix(ta, "- ");
+    case "sub": return linePrefix(ta, "  - ");
+    case "note": return linePrefix(ta, "> ");
     case "link": {
       const url = prompt("Link ka URL likhein:", "https://");
-      if (url) wrapSel("[", `](${url})`, "link text");
+      if (url) wrapSel(ta, "[", `](${url})`, "link text");
       return;
     }
   }
@@ -882,9 +1014,261 @@ $("post-form").addEventListener("submit", async (e) => {
   }
 });
 
+// =====================================================
+// JOBS UPDATE (public)
+// =====================================================
+let jobs = [];
+let jobSearch = "";
+
+function jobStatus(j) {
+  if (j.status === "closed") return { text: "Band hai", cls: "exp", closed: true };
+  if (j.lastDate && new Date(j.lastDate + "T23:59:59") < new Date())
+    return { text: "Last date guzar gayi", cls: "exp", closed: true };
+  return { text: "Applications open", cls: "open", closed: false };
+}
+function fmtLast(d) {
+  if (!d) return "—";
+  return new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+function jobCard(j) {
+  const st = jobStatus(j);
+  return `
+  <article class="job-card" data-id="${esc(j.id)}">
+    <div class="job-top">
+      <span class="job-org">${esc(j.org)}</span>
+      <span class="job-badge ${st.cls}">${esc(st.text)}</span>
+    </div>
+    <h3>${esc(j.title)}</h3>
+    <div class="job-facts">
+      <div><small>Total posts</small><strong>${esc(j.vacancies || "—")}</strong></div>
+      <div><small>Location</small><strong>${esc(j.location || "—")}</strong></div>
+      <div><small>Qualification</small><strong>${esc(j.qualification || "—")}</strong></div>
+      <div><small>Last date</small><strong>${esc(fmtLast(j.lastDate))}</strong></div>
+    </div>
+    <div class="job-foot"><span class="read-more">Tafseel dekhein →</span></div>
+  </article>`;
+}
+async function loadJobs() {
+  $("job-list").innerHTML = `<p class="empty">Loading…</p>`;
+  try {
+    const snap = await getDocs(query(collection(db, "jobs"), where("published", "==", true)));
+    jobs = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => (a.lastDate || "9999").localeCompare(b.lastDate || "9999"));
+    renderJobs();
+  } catch (e) {
+    $("job-list").innerHTML = `<p class="empty">Jobs load nahi hui: ${esc(e.message)}</p>`;
+  }
+}
+function renderJobs() {
+  const s = jobSearch.trim().toLowerCase();
+  const list = jobs.filter((j) =>
+    !s || `${j.title} ${j.org} ${j.location || ""} ${j.qualification || ""}`.toLowerCase().includes(s));
+  $("job-count").textContent = `${list.length} job${list.length === 1 ? "" : "s"}`;
+  $("job-list").innerHTML = list.length
+    ? list.map(jobCard).join("")
+    : `<p class="empty">Abhi koi job nahi hai.</p>`;
+}
+$("job-list").addEventListener("click", (e) => {
+  const c = e.target.closest("[data-id]");
+  if (c) location.hash = "#job/" + c.dataset.id;
+});
+$("job-search").addEventListener("input", (e) => {
+  jobSearch = e.target.value;
+  renderJobs();
+});
+
+async function showJob(id) {
+  $("jp-title").textContent = "Loading…";
+  $("jp-crumb").textContent = "";
+  $("jp-status").innerHTML = "";
+  $("jp-info").innerHTML = "";
+  $("jp-apply").innerHTML = "";
+  $("jp-content").innerHTML = "";
+  try {
+    const snap = await getDoc(doc(db, "jobs", id));
+    if (!snap.exists()) throw new Error("not-found");
+    const j = snap.data();
+    const st = jobStatus(j);
+    $("jp-title").textContent = j.title;
+    $("jp-crumb").textContent = j.title;
+    document.title = `${j.title} | Punjab Portal`;
+
+    if (st.closed) {
+      const msg = j.status === "closed"
+        ? "JOB CLOSED: Is job ke liye abhi applications qabool nahi ho rahi."
+        : "LAST DATE OVER: Is job ke liye ab applications qabool nahi hain.";
+      $("jp-status").innerHTML = `<div class="job-banner">${msg}</div>`;
+    }
+
+    const rows = [
+      ["Organization", j.org], ["Location", j.location], ["Total posts", j.vacancies],
+      ["Qualification", j.qualification], ["Age limit", j.age], ["Salary / Pay scale", j.salary],
+      ["Last date", fmtLast(j.lastDate)], ["Helpline / Contact", j.contact]
+    ].filter(([, v]) => v);
+    $("jp-info").innerHTML = rows
+      .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("");
+
+    if (j.link && /^https?:\/\//i.test(j.link) && !st.closed) {
+      $("jp-apply").innerHTML = `<a class="apply-btn" href="${esc(j.link)}" target="_blank" rel="noopener">Online apply karein →</a>`;
+    }
+    $("jp-content").innerHTML = renderContent(j.details);
+  } catch {
+    $("jp-title").textContent = "Job dastiyab nahi hai";
+    $("jp-content").innerHTML = `<p>Ye job mojood nahi ya abhi publish nahi hui.</p>`;
+  }
+}
+
+// =====================================================
+// JOBS UPDATE (admin)
+// =====================================================
+let adminJobs = [];
+
+async function loadAdminJobs() {
+  try {
+    const snap = await getDocs(collection(db, "jobs"));
+    adminJobs = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
+    renderAdminJobs();
+  } catch (e) {
+    toast(e.message, "err");
+  }
+}
+function renderAdminJobs() {
+  if (!adminJobs.length) {
+    $("job-admin-list").innerHTML = `<p class="empty">Abhi koi job nahi. Nayi job add karein.</p>`;
+    return;
+  }
+  $("job-admin-list").innerHTML = adminJobs.map((j) => {
+    const st = jobStatus(j);
+    return `
+    <div class="row" data-id="${esc(j.id)}">
+      <div class="row-main">
+        <strong>${esc(j.title)}</strong>
+        <small>${esc(j.org)} · Last date: ${esc(fmtLast(j.lastDate))} · ${esc(st.text)}</small>
+      </div>
+      <span class="badge ${j.published ? "live" : "draft"}">${j.published ? "Live" : "Draft"}</span>
+      <div class="row-actions">
+        <a href="#job/${esc(j.id)}" class="btn-ghost">View</a>
+        <button data-jaction="edit" class="btn-ghost">Edit</button>
+        <button data-jaction="toggle" class="btn-ghost">${j.published ? "Unpublish" : "Publish"}</button>
+        <button data-jaction="delete" class="btn-danger">Delete</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+$("job-admin-list").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-jaction]");
+  if (!btn) return;
+  const j = adminJobs.find((x) => x.id === btn.closest("[data-id]").dataset.id);
+  if (!j) return;
+  try {
+    if (btn.dataset.jaction === "edit") fillJobForm(j);
+    if (btn.dataset.jaction === "toggle") {
+      await updateDoc(doc(db, "jobs", j.id), { published: !j.published });
+      toast(j.published ? "Unpublish ho gayi" : "Publish ho gayi");
+      loadAdminJobs();
+      loadJobs();
+    }
+    if (btn.dataset.jaction === "delete") {
+      if (!confirm(`"${j.title}" delete karna hai?`)) return;
+      await deleteDoc(doc(db, "jobs", j.id));
+      toast("Job delete ho gayi");
+      if ($("job-id").value === j.id) resetJobForm();
+      loadAdminJobs();
+      loadJobs();
+    }
+  } catch (err) {
+    toast(err.message, "err");
+  }
+});
+
+function fillJobForm(j) {
+  $("job-id").value = j.id;
+  $("j-title").value = j.title || "";
+  $("j-org").value = j.org || "";
+  $("j-location").value = j.location || "";
+  $("j-vacancies").value = j.vacancies || "";
+  $("j-qual").value = j.qualification || "";
+  $("j-age").value = j.age || "";
+  $("j-salary").value = j.salary || "";
+  $("j-last").value = j.lastDate || "";
+  $("j-link").value = j.link || "";
+  $("j-contact").value = j.contact || "";
+  $("j-details").value = j.details || "";
+  $("j-status").value = j.status || "open";
+  $("j-published").checked = !!j.published;
+  $("job-form-title").textContent = "Job edit karein";
+  $("job-save").textContent = "Update Job";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+function resetJobForm() {
+  $("job-form").reset();
+  $("job-id").value = "";
+  $("job-form-title").textContent = "Nayi job add karein";
+  $("job-save").textContent = "Save Job";
+  $("j-published").checked = true;
+  $("j-status").value = "open";
+}
+$("job-reset").addEventListener("click", resetJobForm);
+
+$("job-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = $("job-save");
+  const id = $("job-id").value;
+  const isEdit = !!id;
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+  try {
+    const payload = {
+      title: $("j-title").value.trim(),
+      org: $("j-org").value.trim(),
+      location: $("j-location").value.trim(),
+      vacancies: $("j-vacancies").value.trim(),
+      qualification: $("j-qual").value.trim(),
+      age: $("j-age").value.trim(),
+      salary: $("j-salary").value.trim(),
+      lastDate: $("j-last").value,
+      link: $("j-link").value.trim(),
+      contact: $("j-contact").value.trim(),
+      details: $("j-details").value.trim(),
+      status: $("j-status").value,
+      published: $("j-published").checked,
+      updatedAt: serverTimestamp()
+    };
+    if (isEdit) {
+      await updateDoc(doc(db, "jobs", id), payload);
+      toast("Job update ho gayi ✔");
+    } else {
+      payload.createdAt = serverTimestamp();
+      await addDoc(collection(db, "jobs"), payload);
+      toast("Job save ho gayi ✔");
+    }
+    resetJobForm();
+    loadAdminJobs();
+    loadJobs();
+  } catch (err) {
+    toast(err.message || "Kuch ghalat ho gaya", "err");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = isEdit ? "Update Job" : "Save Job";
+  }
+});
+
+// Admin tabs: Posts / Jobs Update
+document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
+  document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("active", x === t));
+  const jobsTab = t.dataset.tab === "jobs";
+  document.querySelectorAll(".posts-only").forEach((el) => (el.hidden = jobsTab));
+  $("jobs-admin").hidden = !jobsTab;
+  if (jobsTab) loadAdminJobs();
+}));
+
 // ---------- START ----------
 route();
 loadPosts();
+loadJobs();
 </script>
 </body>
 </html>

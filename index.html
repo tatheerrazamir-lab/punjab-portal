@@ -361,6 +361,12 @@ input[type=file]{padding:.5rem}
 .adv-list li{position:relative;padding:.45rem 0 .45rem 2rem;color:var(--ink)}
 .adv-list li::before{content:"";position:absolute;left:.2rem;top:.85rem;width:12px;height:7px;border-left:3px solid var(--g500);border-bottom:3px solid var(--g500);transform:rotate(-45deg)}
 
+.job-page-img{display:block;width:100%;max-height:560px;object-fit:contain;background:#fbf8ef;border:1px solid var(--line);border-radius:14px;margin:0 0 1.4rem;cursor:zoom-in}
+.job-thumb{height:170px;background-color:#fbf8ef;background-size:contain;background-repeat:no-repeat;background-position:center;border:1px solid var(--line);border-radius:14px;margin-bottom:.9rem;cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:300;background:rgba(6,30,15,.92);display:grid;place-items:center;padding:1.5rem;cursor:zoom-out}
+.lightbox img{max-width:100%;max-height:92vh;object-fit:contain;border-radius:10px;background:#fff}
+.lb-close{position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:50%;border:none;background:#fff;color:var(--g900);display:grid;place-items:center;cursor:pointer}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
 .toast.show{transform:translate(-50%,0)}
@@ -567,7 +573,7 @@ input[type=file]{padding:.5rem}
   <div class="pp-body">
     <div class="container">
       <article class="pp-article">
-        <img id="jp-img" class="pp-img" alt="" hidden />
+        <img id="jp-img" class="job-page-img" alt="Job notification" hidden />
         <div id="jp-status"></div>
         <table class="info-table" id="jp-info"></table>
         <div id="jp-apply"></div>
@@ -813,6 +819,12 @@ input[type=file]{padding:.5rem}
   </section>
 </div>
 
+<div id="lightbox" class="lightbox" hidden>
+  <button id="lb-close" class="lb-close" type="button" aria-label="Close">
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <img id="lb-img" alt="" />
+</div>
 <div id="toast" class="toast"></div>
 
 <script type="module">
@@ -1402,7 +1414,13 @@ function renderJobs() {
 }
 $("job-list").addEventListener("click", (e) => {
   const c = e.target.closest("[data-id]");
-  if (c) location.hash = "#job/" + c.dataset.id;
+  const jid = c ? c.dataset.id : null;
+  if (e.target.closest(".job-thumb")) {
+    const j = jobs.find((x) => x.id === jid);
+    openLightbox(j && j.image_data);
+    return;
+  }
+  if (c) location.hash = "#job/" + jid;
 });
 $("job-search").addEventListener("input", (e) => {
   jobSearch = e.target.value;
@@ -1912,6 +1930,22 @@ $("msg-list").addEventListener("click", async (e) => {
     toast(err.message, "err");
   }
 });
+
+// Lightbox: image ko bari karke dikhana
+function openLightbox(src) {
+  if (!src) return;
+  $("lb-img").src = src;
+  $("lightbox").hidden = false;
+  document.body.classList.add("no-scroll");
+}
+function closeLightbox() {
+  $("lightbox").hidden = true;
+  $("lb-img").removeAttribute("src");
+  document.body.classList.remove("no-scroll");
+}
+$("lightbox").addEventListener("click", closeLightbox);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
+$("jp-img").addEventListener("click", () => openLightbox($("jp-img").src));
 
 // ---------- START ----------
 route();

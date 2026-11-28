@@ -356,6 +356,11 @@ input[type=file]{padding:.5rem}
 .contact-card .contact-wrap{grid-template-columns:1fr 1.1fr}
 .contact-card .contact-form{box-shadow:none;border:1px solid var(--line)}
 
+.job-thumb{height:150px;border-radius:14px;background-size:cover;background-position:center;margin-bottom:.9rem}
+.adv-list{list-style:none;padding:0;margin:.4rem 0 1.2rem}
+.adv-list li{position:relative;padding:.45rem 0 .45rem 2rem;color:var(--ink)}
+.adv-list li::before{content:"";position:absolute;left:.2rem;top:.85rem;width:12px;height:7px;border-left:3px solid var(--g500);border-bottom:3px solid var(--g500);transform:rotate(-45deg)}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
 .toast.show{transform:translate(-50%,0)}
@@ -562,9 +567,11 @@ input[type=file]{padding:.5rem}
   <div class="pp-body">
     <div class="container">
       <article class="pp-article">
+        <img id="jp-img" class="pp-img" alt="" hidden />
         <div id="jp-status"></div>
         <table class="info-table" id="jp-info"></table>
         <div id="jp-apply"></div>
+        <div id="jp-adv"></div>
         <div id="jp-content"></div>
       </article>
       <a href="#jobs" class="pp-back">Back to all jobs</a>
@@ -632,6 +639,7 @@ input[type=file]{padding:.5rem}
         <form id="job-form" class="panel">
           <h2 id="job-form-title">Add a new job</h2>
           <input type="hidden" id="job-id" />
+          <input type="hidden" id="j-current-image" />
           <label>Job title *<input id="j-title" required maxlength="150" placeholder="e.g. Junior Clerk" /></label>
           <label>Organization / Department *<input id="j-org" required maxlength="150" placeholder="e.g. Punjab Police" /></label>
           <div class="form-row">
@@ -642,12 +650,8 @@ input[type=file]{padding:.5rem}
             <label>Qualification<input id="j-qual" placeholder="e.g. Matric / BA" /></label>
             <label>Age limit<input id="j-age" placeholder="e.g. 18 to 30 years" /></label>
           </div>
-          <div class="form-row">
-            <label>Salary / Pay scale<input id="j-salary" placeholder="e.g. BPS-11" /></label>
-            <label>Last date *<input id="j-last" type="date" required /></label>
-          </div>
+          <label>Last date *<input id="j-last" type="date" required /></label>
           <label>Online apply link<input id="j-link" type="url" placeholder="https://..." /></label>
-          <label>Helpline / Contact<input id="j-contact" placeholder="e.g. 0800-00000" /></label>
           <label>Details
             <div class="help">Formatting is the same as in posts. Write eligibility, documents, fees etc. in separate sections (## heading).</div>
             <div class="toolbar" data-target="j-details">
@@ -660,6 +664,13 @@ input[type=file]{padding:.5rem}
               <button type="button" data-fmt="note" title="Highlight box"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/></svg>Note</button>
             </div>
             <textarea id="j-details" rows="8"></textarea>
+          </label>
+          <label>Job image (optional, shown on job card and page)
+            <input id="j-image" type="file" accept="image/*" />
+          </label>
+          <img id="j-preview" class="preview" alt="" hidden />
+          <label>Advantages / benefits (one per line)
+            <textarea id="j-advantages" rows="4" placeholder="e.g. Free medical facility&#10;Pension after retirement"></textarea>
           </label>
           <div class="form-row">
             <label>Applications status
@@ -1353,6 +1364,7 @@ function jobCard(j) {
   const st = jobStatus(j);
   return `
   <article class="job-card" data-id="${esc(j.id)}">
+    ${j.image_data ? `<div class="job-thumb" style="background-image:url('${esc(j.image_data)}')"></div>` : ""}
     <div class="job-top">
       <span class="job-org">${esc(j.org)}</span>
       <span class="job-badge ${st.cls}">${esc(st.text)}</span>
@@ -1404,6 +1416,8 @@ async function showJob(id) {
   $("jp-info").innerHTML = "";
   $("jp-apply").innerHTML = "";
   $("jp-content").innerHTML = "";
+  $("jp-img").hidden = true;
+  $("jp-adv").innerHTML = "";
   try {
     const snap = await getDoc(doc(db, "jobs", id));
     if (!snap.exists()) throw new Error("not-found");
@@ -1423,8 +1437,8 @@ async function showJob(id) {
 
     const rows = [
       ["Organization", j.org], ["Location", j.location], ["Total posts", j.vacancies],
-      ["Qualification", j.qualification], ["Age limit", j.age], ["Salary / Pay scale", j.salary],
-      ["Last date", fmtLast(j.lastDate)], ["Helpline / Contact", j.contact]
+      ["Qualification", j.qualification], ["Age limit", j.age],
+      ["Last date", fmtLast(j.lastDate)]
     ].filter(([, v]) => v);
     $("jp-info").innerHTML = rows
       .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join("");
@@ -1432,6 +1446,11 @@ async function showJob(id) {
     if (j.link && /^https?:\/\//i.test(j.link) && !st.closed) {
       $("jp-apply").innerHTML = `<a class="apply-btn" href="${esc(j.link)}" target="_blank" rel="noopener">Apply online ${UI.arrow}</a>`;
     }
+    if (j.image_data) { $("jp-img").src = j.image_data; $("jp-img").hidden = false; }
+    const adv = (j.advantages || "").split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+    $("jp-adv").innerHTML = adv.length
+      ? `<h2>Advantages</h2><ul class="adv-list">${adv.map((a) => `<li>${esc(a)}</li>`).join("")}</ul>`
+      : "";
     $("jp-content").innerHTML = renderContent(j.details);
   } catch {
     $("jp-title").textContent = "Job not available";
@@ -1513,10 +1532,13 @@ function fillJobForm(j) {
   $("j-vacancies").value = j.vacancies || "";
   $("j-qual").value = j.qualification || "";
   $("j-age").value = j.age || "";
-  $("j-salary").value = j.salary || "";
   $("j-last").value = j.lastDate || "";
   $("j-link").value = j.link || "";
-  $("j-contact").value = j.contact || "";
+  $("j-advantages").value = j.advantages || "";
+  $("j-current-image").value = j.image_data || "";
+  $("j-image").value = "";
+  $("j-preview").src = j.image_data || "";
+  $("j-preview").hidden = !j.image_data;
   $("j-details").value = j.details || "";
   $("j-status").value = j.status || "open";
   $("j-published").checked = !!j.published;
@@ -1531,8 +1553,16 @@ function resetJobForm() {
   $("job-save").textContent = "Save Job";
   $("j-published").checked = true;
   $("j-status").value = "open";
+  $("j-current-image").value = "";
+  $("j-preview").hidden = true;
 }
 $("job-reset").addEventListener("click", resetJobForm);
+$("j-image").addEventListener("change", (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  $("j-preview").src = URL.createObjectURL(f);
+  $("j-preview").hidden = false;
+});
 
 $("job-form").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -1549,15 +1579,16 @@ $("job-form").addEventListener("submit", async (e) => {
       vacancies: $("j-vacancies").value.trim(),
       qualification: $("j-qual").value.trim(),
       age: $("j-age").value.trim(),
-      salary: $("j-salary").value.trim(),
       lastDate: $("j-last").value,
       link: $("j-link").value.trim(),
-      contact: $("j-contact").value.trim(),
+      advantages: $("j-advantages").value.trim(),
       details: $("j-details").value.trim(),
       status: $("j-status").value,
       published: $("j-published").checked,
       updatedAt: serverTimestamp()
     };
+    const jobFile = $("j-image").files[0];
+    payload.image_data = jobFile ? await imageToDataUrl(jobFile) : ($("j-current-image").value || null);
     if (isEdit) {
       await updateDoc(doc(db, "jobs", id), payload);
       toast("Job updated");

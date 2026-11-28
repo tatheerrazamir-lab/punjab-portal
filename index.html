@@ -337,6 +337,25 @@ input[type=file]{padding:.5rem}
  .about-card .stats{margin:0 auto}
 }
 
+.contact-section{padding:4.5rem 0;background:linear-gradient(180deg,#fbf8ef 0%,#eef6ef 100%)}
+.contact-wrap{display:grid;grid-template-columns:1fr 1.1fr;gap:3rem;align-items:start}
+.contact-info h2{color:var(--g900);font-size:2rem;margin:0 0 .6rem}
+.contact-info p{color:var(--muted);font-size:1.02rem;max-width:460px}
+.contact-form{box-shadow:var(--shadow)}
+.msg-list{display:flex;flex-direction:column;gap:.9rem}
+.msg{border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;background:#fff}
+.msg.unread{border-left:5px solid var(--gold);background:#fffbeb}
+.msg-top{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;align-items:baseline}
+.msg-top strong{color:var(--g900)}
+.msg p{white-space:pre-wrap;margin:.6rem 0;color:var(--ink)}
+.msg-actions{display:flex;gap:.4rem;flex-wrap:wrap}
+.msg-actions a,.msg-actions button{padding:.4rem .75rem;font-size:.85rem}
+@media(max-width:900px){.contact-wrap{grid-template-columns:1fr}}
+
+.contact-card{background:#fff;border-radius:24px;padding:2.5rem;box-shadow:var(--shadow);margin-top:-3rem;position:relative;z-index:2}
+.contact-card .contact-wrap{grid-template-columns:1fr 1.1fr}
+.contact-card .contact-form{box-shadow:none;border:1px solid var(--line)}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,140%);background:var(--g900);color:#fff;padding:.8rem 1.3rem;border-radius:12px;box-shadow:var(--shadow-h);transition:transform .35s;z-index:200;max-width:90%}
 .toast.show{transform:translate(-50%,0)}
@@ -442,7 +461,7 @@ input[type=file]{padding:.5rem}
 
   
 
-  <footer id="contact" class="footer">
+  <footer id="footer" class="footer">
     <div class="container footer-inner">
       <div><strong>Punjab Portal</strong><p>© <span id="year"></span> Punjab Portal. All rights reserved.</p></div>
       
@@ -474,6 +493,39 @@ input[type=file]{padding:.5rem}
             <div><strong>24/7</strong><span>Online Access</span></div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CONTACT PAGE ============ -->
+<div id="contact-page" hidden>
+  <section class="pp-hero">
+    <div class="container">
+      <div class="crumb"><a href="#">Home</a> &nbsp;/&nbsp; <span class="cur">Contact</span></div>
+      <h1>Contact Us</h1>
+    </div>
+  </section>
+  <div class="pp-body">
+    <div class="container">
+      <div class="contact-card">
+        <div class="contact-wrap">
+    <div class="container contact-wrap">
+      <div class="contact-info">
+        <h2>Contact Us</h2>
+        <p>Send us your question, complaint or suggestion. Our team will read your message and reply to your email.</p>
+      </div>
+      <form id="contact-form" class="panel contact-form">
+        <label>Name *<input id="c-name" required maxlength="100" /></label>
+        <label>Email *<input id="c-email" type="email" required maxlength="150" /></label>
+        <label>Phone (optional)<input id="c-phone" maxlength="30" /></label>
+        <label>Message *<textarea id="c-msg" rows="5" required maxlength="1000"></textarea></label>
+        <input id="c-hp" type="text" tabindex="-1" autocomplete="off" style="display:none" />
+        <button type="submit" id="c-send" class="btn-primary">Send message</button>
+        <p id="c-status" class="muted" style="margin:.8rem 0 0"></p>
+      </form>
+    </div>
+  </div>
       </div>
     </div>
   </div>
@@ -573,6 +625,7 @@ input[type=file]{padding:.5rem}
         <button type="button" class="tab active" data-tab="posts">Posts</button>
         <button type="button" class="tab" data-tab="jobs">Jobs Update</button>
         <button type="button" class="tab" data-tab="users">Users</button>
+        <button type="button" class="tab" data-tab="messages">Messages<span id="tab-msg-count"></span></button>
       </div>
 
       <section id="jobs-admin" class="admin-grid" hidden>
@@ -627,6 +680,17 @@ input[type=file]{padding:.5rem}
           <select id="job-sort" class="sort-select"><option value="new">Newest first</option><option value="views">Most viewed first</option></select>
           <div id="job-admin-list" class="list"></div>
         </section>
+      </section>
+
+      <section id="messages-admin" class="panel" hidden style="margin-bottom:1.5rem">
+        <div class="users-head">
+          <div>
+            <h2 style="margin:0">Contact Messages</h2>
+            <span class="muted">Messages from the website contact form</span>
+          </div>
+          <div class="users-tools"><span id="msg-count" class="muted"></span></div>
+        </div>
+        <div id="msg-list" class="msg-list" style="margin-top:1rem"></div>
       </section>
 
       <section id="users-admin" class="panel" hidden style="margin-bottom:1.5rem">
@@ -861,7 +925,8 @@ function route() {
   const onJobs = h === "#jobs";
   const onJob = h.startsWith("#job/");
   const onAbout = h === "#about";
-  const onSub = onAdmin || onPost || onJobs || onJob || onAbout;
+  const onContact = h === "#contact";
+  const onSub = onAdmin || onPost || onJobs || onJob || onAbout || onContact;
 
   $("site").hidden = onSub;
   $("admin").hidden = !onAdmin;
@@ -869,12 +934,14 @@ function route() {
   $("jobs-page").hidden = !onJobs;
   $("job-page").hidden = !onJob;
   $("about-page").hidden = !onAbout;
+  $("contact-page").hidden = !onContact;
   $("nav").classList.remove("open");
 
   if (onPost) { showPost(decodeURIComponent(h.slice(6))); window.scrollTo(0, 0); }
   else if (onJob) { showJob(decodeURIComponent(h.slice(5))); window.scrollTo(0, 0); }
   else if (onJobs) { document.title = "Jobs Update | Punjab Portal"; loadJobs(); window.scrollTo(0, 0); }
   else if (onAbout) { document.title = "About | Punjab Portal"; window.scrollTo(0, 0); }
+  else if (onContact) { document.title = "Contact | Punjab Portal"; window.scrollTo(0, 0); }
   else if (onAdmin) { window.scrollTo(0, 0); }
   else {
     document.title = DEFAULT_TITLE;
@@ -1510,15 +1577,17 @@ $("job-form").addEventListener("submit", async (e) => {
   }
 });
 
-// Admin tabs: Posts / Jobs Update / Users
-document.querySelectorAll(".tab").forEach((t) => t.addEventListener("click", () => {
-  const tab = t.dataset.tab;
-  document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("active", x === t));
+// Admin tabs: Posts / Jobs Update / Users / Messages
+document.querySelectorAll(".tab").forEach((tb) => tb.addEventListener("click", () => {
+  const tab = tb.dataset.tab;
+  document.querySelectorAll(".tab").forEach((x) => x.classList.toggle("active", x === tb));
   document.querySelectorAll(".posts-only").forEach((el) => (el.hidden = tab !== "posts"));
   $("jobs-admin").hidden = tab !== "jobs";
   $("users-admin").hidden = tab !== "users";
+  $("messages-admin").hidden = tab !== "messages";
   if (tab === "jobs") loadAdminJobs();
   if (tab === "users") loadUsers();
+  if (tab === "messages") loadMessages();
 }));
 
 // Hero photo: mouse ke saath 3D jhukao
@@ -1723,6 +1792,95 @@ function fillTicker() {
   const html = items.map((t) => `<span class="tk">${esc(t)}</span>`).join("");
   $("ticker-track").innerHTML = html + html;
 }
+
+// =====================================================
+// CONTACT FORM (visitors) + MESSAGES (admin)
+// =====================================================
+let lastSent = 0;
+$("contact-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if ($("c-hp").value) return; // bots ke liye
+  if (Date.now() - lastSent < 30000) {
+    $("c-status").textContent = "Please wait a few seconds before sending another message.";
+    return;
+  }
+  const btn = $("c-send");
+  btn.disabled = true;
+  btn.textContent = "Sending…";
+  try {
+    await addDoc(collection(db, "messages"), {
+      name: $("c-name").value.trim(),
+      email: $("c-email").value.trim(),
+      phone: $("c-phone").value.trim(),
+      message: $("c-msg").value.trim(),
+      createdAt: serverTimestamp(),
+      read: false
+    });
+    lastSent = Date.now();
+    $("contact-form").reset();
+    $("c-status").textContent = "Thank you! Your message has been sent.";
+  } catch (err) {
+    $("c-status").textContent = "Message could not be sent: " + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Send message";
+  }
+});
+
+let adminMsgs = [];
+
+async function loadMessages() {
+  try {
+    const snap = await getDocs(collection(db, "messages"));
+    adminMsgs = snap.docs
+      .map((d) => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
+    renderMessages();
+  } catch (e) {
+    toast(e.message, "err");
+  }
+}
+
+function renderMessages() {
+  const unread = adminMsgs.filter((m) => !m.read).length;
+  $("msg-count").textContent = `${adminMsgs.length} total · ${unread} unread`;
+  $("tab-msg-count").textContent = unread ? ` (${unread})` : "";
+  if (!adminMsgs.length) {
+    $("msg-list").innerHTML = `<p class="empty">No messages yet.</p>`;
+    return;
+  }
+  $("msg-list").innerHTML = adminMsgs.map((m) => `
+    <div class="msg ${m.read ? "" : "unread"}" data-id="${esc(m.id)}">
+      <div class="msg-top">
+        <div><strong>${esc(m.name)}</strong> · <a href="mailto:${esc(m.email)}">${esc(m.email)}</a>${m.phone ? ` · ${esc(m.phone)}` : ""}</div>
+        <small class="muted">${fmtDate(m.createdAt)}</small>
+      </div>
+      <p>${esc(m.message)}</p>
+      <div class="msg-actions">
+        <a class="btn-ghost" href="mailto:${esc(m.email)}?subject=${encodeURIComponent("Re: Punjab Portal")}">Reply by email</a>
+        ${m.read ? "" : `<button data-maction="read" class="btn-ghost">Mark as read</button>`}
+        <button data-maction="delete" class="btn-danger">Delete</button>
+      </div>
+    </div>`).join("");
+}
+
+$("msg-list").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-maction]");
+  if (!btn) return;
+  const id = btn.closest("[data-id]").dataset.id;
+  try {
+    if (btn.dataset.maction === "read") {
+      await updateDoc(doc(db, "messages", id), { read: true });
+    }
+    if (btn.dataset.maction === "delete") {
+      if (!confirm("Delete this message?")) return;
+      await deleteDoc(doc(db, "messages", id));
+    }
+    loadMessages();
+  } catch (err) {
+    toast(err.message, "err");
+  }
+});
 
 // ---------- START ----------
 route();
